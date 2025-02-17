@@ -1,0 +1,107 @@
+{% extends "master.html" %}
+
+{% block title %}
+    Dodaj nowego gościa
+{% endblock %}
+
+{% block header %}
+    Dodaj nowego gościa
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div id="formset-container">
+            {% for form in formset %}
+                <div class="guest-form">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit">Zapisz</button>
+    </form>
+
+    <script>
+        const FORM_NAME_REGEX = /form-(\d)-(.*)/;
+        const FORM_ID_REGEX = /id_form-(\d)-(.*)/;
+        let forms_nb = 1;
+        document.addEventListener("DOMContentLoaded", function () {
+            let container = document.getElementById("formset-container");
+            let totalForms = document.getElementById("id_form-TOTAL_FORMS");
+    
+            function addNewForm() {
+                forms_nb++;
+                let forms = container.getElementsByClassName("guest-form");
+                let lastForm = forms[forms.length - 1];
+                //let inputs = lastForm.querySelectorAll("input");
+                //let isFilled = Array.from(inputs).some(input => input.value.trim() !== "");
+    
+                let newForm = lastForm.cloneNode(true);
+                let inputs = newForm.querySelectorAll("input");
+                inputs.forEach(input => input.value = "");  // clear values
+                let allElements = newForm.querySelectorAll('*').forEach(e => e.querySelectorAll('*'));
+                
+                newForm.querySelectorAll('*').forEach(element => {
+                    element.querySelectorAll('*').forEach(inner_element => {
+                        if (inner_element.tagName==='LABEL' && inner_element.htmlFor.match(FORM_ID_REGEX) != null) {
+                            inner_element.htmlFor = inner_element.htmlFor.replace(FORM_ID_REGEX, `id_form-${forms_nb-1}-$2`);
+                        }
+                        else if (inner_element.name.match(FORM_NAME_REGEX) != null && inner_element.id.match(FORM_ID_REGEX) != null) {
+                            inner_element.name = inner_element.name.replace(FORM_NAME_REGEX, `form-${forms_nb-1}-$2`);
+                            inner_element.id = inner_element.id.replace(FORM_ID_REGEX, `id_form-${forms_nb-1}-$2`);
+                        }
+                    });
+                });
+                container.appendChild(newForm);
+
+            }
+    
+            function removeEmptyForms() {
+                let forms = container.getElementsByClassName("guest-form");
+                let emptyForms = [];
+                Array.from(forms).forEach(form => {
+                    let inputs = form.querySelectorAll("input");
+                    let isEmpty = Array.from(inputs).every(input => input.value.trim() === "");
+                    if (isEmpty) {
+                        emptyForms.push(form);
+                    }
+                    if (forms.length > 1 && emptyForms.length > 1) {
+                        for (let i = 0; i < emptyForms.length-1; i++) { // delete without the last one
+                            emptyForms[i].remove();
+                        }
+                    }
+                });
+            }
+    
+            container.addEventListener("blur", function (event) {
+                removeEmptyForms();
+                let class_name_match = event.target.name.match(FORM_NAME_REGEX);
+                if (class_name_match == null) {
+                    return;
+                }
+                let form_nb = class_name_match[1];
+                let class_name = class_name_match[2];
+                if (class_name!=='last_name' && class_name!=='first_name') {
+                    return;
+                }
+                let second_pair_name = class_name == 'last_name' ? 'first_name' : 'last_name';
+                let second_pair = document.getElementById(`id_form-${form_nb}-${second_pair_name}`);
+                if (second_pair === null) {
+                    return;
+                } 
+                let userData = [
+                    event.target.value,
+                    second_pair.value
+                ]
+                //if (event.target.tagName === "INPUT" && userData.reduce((all, v) => all&&(v!==""))) {
+                if (event.target.tagName === "INPUT" && !userData.some(data => data.trim() === "")) {
+                    //console.log("inside");
+                    addNewForm();
+                }
+            }, true);
+        });
+    </script>
+{% endblock %}

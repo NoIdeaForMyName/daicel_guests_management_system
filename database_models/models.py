@@ -1,0 +1,77 @@
+from django.db import models
+
+class Company(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+
+    class Meta:
+        db_table = "Companies"
+        
+    def __str__(self):
+        return self.name
+
+class Guest(models.Model):
+    firstname = models.CharField(max_length=30)
+    lastname = models.CharField(max_length=30)
+    company = models.ForeignKey(Company, on_delete=models.RESTRICT)
+
+    class Meta:
+        db_table = "Guests"
+
+    def __str__(self):
+        return f"{self.firstname} {self.lastname}"
+
+class Host(models.Model):
+    class Meta:
+        db_table = "Hosts"
+
+class Car(models.Model):
+    register_number = models.CharField(max_length=10, unique=True)
+
+    class Meta:
+        db_table = "Cars"
+
+    def __str__(self):
+        return self.register_number
+
+class Meeting(models.Model):
+    author = models.IntegerField()
+    description = models.TextField()
+    start_timestamp = models.DateTimeField(auto_now_add=True)
+    end_timestamp = models.DateTimeField()
+
+    class Meta:
+        db_table = "Meetings"
+
+class Arrival(models.Model):
+    guest = models.ForeignKey(Guest, on_delete=models.RESTRICT)
+    car = models.ForeignKey(Car, on_delete=models.RESTRICT)
+    arrival_purpose = models.TextField()
+    arrival_timestamp = models.DateTimeField(auto_now_add=True)
+    leave_timestamp = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "Arrivals"
+
+class Participation(models.Model):
+    arrival = models.ForeignKey(Arrival, on_delete=models.RESTRICT)
+    meeting = models.ForeignKey(Meeting, on_delete=models.RESTRICT)
+
+    class Meta:
+        db_table = "Participations"
+        unique_together = ('arrival', 'meeting')
+
+class Leadership(models.Model):
+    host = models.ForeignKey(Host, on_delete=models.RESTRICT)
+    meeting = models.ForeignKey(Meeting, on_delete=models.RESTRICT)
+
+    class Meta:
+        db_table = "Leaderships"
+        unique_together = ('host', 'meeting')
+
+class Responsibility(models.Model):
+    host = models.ForeignKey(Host, on_delete=models.RESTRICT)
+    arrival = models.ForeignKey(Arrival, on_delete=models.RESTRICT)
+
+    class Meta:
+        db_table = "Responsibilities"
+        unique_together = ('host', 'arrival')
