@@ -9,99 +9,225 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        {{ formset.management_form }}
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+        
+        /* The Modal (background) */
+        .details-modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        
+        /* Modal Content */
+        .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        }
+        
+        /* The Close Button */
+        .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+        }
+    </style>
 
-        <div id="formset-container">
-            {% for form in formset %}
-                <div class="guest-form">
-                    {{ form.as_p }}
-                </div>
-            {% endfor %}
+    <div id="main-form">
+        <label for="company-name">Nazwa firmy</label>
+        <input type="text" id="company-name">
+    
+        <label for="register-nb">Numer rejestracyjny</label>
+        <input type="text" id="register-nb" placeholder="opcjonalnie">
+    
+        <label for="arrival-purpose">Cel przybycia</label>
+        <input type="text" id="arrival-purpose" placeholder="np. Spotkanie, Prace serwisowe itp.">
+    
+        <div id="guests-form">
+            <label for="guest-fname">Imię</label>
+            <input type="text" id="guest-fname">
+    
+            <label for="guest-lname">Nazwisko</label>
+            <input type="text" id="guest-lname">
+    
+            <button id="add-guest" onclick="addGuest()">Dodaj</button>
+    
+            <table id="guests-table">
+            <thead>
+                <tr>
+                    <th>Nazwisko</th>
+                    <th>Imię</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody id="guest-table-body"></tbody>
+            </table>
         </div>
 
-        <button type="submit">Zapisz</button>
-    </form>
+        <div id="hosts-form">
+            <input list="hosts" id="hosts-list">
+            <datalist id="hosts">
+                {% for host in hosts_data %}
+                    <option value="{{host}}">
+                {% endfor %}
+            </datalist>
+            <button id="add-host" onclick="addHost()">Dodaj</button>
 
+            <table id="hosts-table">
+                <thead>
+                    <tr>
+                        <th>Nazwisko</th>
+                        <th>Imię</th>
+                        <th>Akcja</th>
+                    </tr>
+                </thead>
+                <tbody id="host-table-body"></tbody>
+            </table>
+        </div>
+
+        <div id="meetings-form">
+            <button id="meeting-details-button" onclick="document.getElementById('meeting-details-modal').style.display='block'">Szczegóły spotkań</button>
+            <div id="meeting-details-modal" class="details-modal">
+                <div class="modal-content">
+                    <span class="close" onclick="document.getElementById('meeting-details-modal').style.display='none'">&times;</span>
+                    <h2>Dostępne spotkania</h2>
+                    {% for meeting in meetings_data %}
+                        <p class="meeting-detail">{{meeting}}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <table id="meetings-table">
+                <thead>
+                    <tr>
+                        <th>Dane spotkania</th>
+                        <th>Akcja</th>
+                    </tr>
+                </thead>
+                <tbody id="meeting-table-body"></tbody>
+            </table>
+        </div>
+
+    </div>
+  
     <script>
-        const FORM_NAME_REGEX = /form-(\d)-(.*)/;
-        const FORM_ID_REGEX = /id_form-(\d)-(.*)/;
-        let forms_nb = 1;
-        document.addEventListener("DOMContentLoaded", function () {
-            let container = document.getElementById("formset-container");
-            let totalForms = document.getElementById("id_form-TOTAL_FORMS");
-    
-            function addNewForm() {
-                forms_nb++;
-                let forms = container.getElementsByClassName("guest-form");
-                let lastForm = forms[forms.length - 1];
-                //let inputs = lastForm.querySelectorAll("input");
-                //let isFilled = Array.from(inputs).some(input => input.value.trim() !== "");
-    
-                let newForm = lastForm.cloneNode(true);
-                let inputs = newForm.querySelectorAll("input");
-                inputs.forEach(input => input.value = "");  // clear values
-                let allElements = newForm.querySelectorAll('*').forEach(e => e.querySelectorAll('*'));
-                
-                newForm.querySelectorAll('*').forEach(element => {
-                    element.querySelectorAll('*').forEach(inner_element => {
-                        if (inner_element.tagName==='LABEL' && inner_element.htmlFor.match(FORM_ID_REGEX) != null) {
-                            inner_element.htmlFor = inner_element.htmlFor.replace(FORM_ID_REGEX, `id_form-${forms_nb-1}-$2`);
-                        }
-                        else if (inner_element.name.match(FORM_NAME_REGEX) != null && inner_element.id.match(FORM_ID_REGEX) != null) {
-                            inner_element.name = inner_element.name.replace(FORM_NAME_REGEX, `form-${forms_nb-1}-$2`);
-                            inner_element.id = inner_element.id.replace(FORM_ID_REGEX, `id_form-${forms_nb-1}-$2`);
-                        }
-                    });
-                });
-                container.appendChild(newForm);
-
-            }
-    
-            function removeEmptyForms() {
-                let forms = container.getElementsByClassName("guest-form");
-                let emptyForms = [];
-                Array.from(forms).forEach(form => {
-                    let inputs = form.querySelectorAll("input");
-                    let isEmpty = Array.from(inputs).every(input => input.value.trim() === "");
-                    if (isEmpty) {
-                        emptyForms.push(form);
-                    }
-                    if (forms.length > 1 && emptyForms.length > 1) {
-                        for (let i = 0; i < emptyForms.length-1; i++) { // delete without the last one
-                            emptyForms[i].remove();
-                        }
-                    }
-                });
-            }
-    
-            container.addEventListener("blur", function (event) {
-                removeEmptyForms();
-                let class_name_match = event.target.name.match(FORM_NAME_REGEX);
-                if (class_name_match == null) {
-                    return;
-                }
-                let form_nb = class_name_match[1];
-                let class_name = class_name_match[2];
-                if (class_name!=='last_name' && class_name!=='first_name') {
-                    return;
-                }
-                let second_pair_name = class_name == 'last_name' ? 'first_name' : 'last_name';
-                let second_pair = document.getElementById(`id_form-${form_nb}-${second_pair_name}`);
-                if (second_pair === null) {
-                    return;
-                } 
-                let userData = [
-                    event.target.value,
-                    second_pair.value
-                ]
-                //if (event.target.tagName === "INPUT" && userData.reduce((all, v) => all&&(v!==""))) {
-                if (event.target.tagName === "INPUT" && !userData.some(data => data.trim() === "")) {
-                    //console.log("inside");
-                    addNewForm();
-                }
-            }, true);
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const meetingDetailsList = document.getElementsByClassName("meeting-detail");
+            Array.from(meetingDetailsList).forEach(element => {
+                element.addEventListener("click", () => addMeeting(element.textContent));
+            });
         });
+
+        function addMeeting(meeting_data) {
+            const newMeetingRow = document.createElement("tr");
+    
+            newMeetingRow.appendChild(createTextTableField(meeting_data));   
+            newMeetingRow.appendChild(createActionTableButton());
+    
+            let meetingTableBody = document.getElementById("meeting-table-body");
+            meetingTableBody.appendChild(newMeetingRow);
+
+            document.getElementById("meeting-details-modal").style.display='none';
+        }
+
+        function addHost() {
+            HOST_REGEX = /(\d+) - (\w+) (\w+)/;
+            let hostNode = document.getElementById("hosts-list");
+            const host = hostNode.value;
+            console.log("DADAD", host);
+            let match = host.match(HOST_REGEX);
+            if (!match) {
+                alert("Błędny format danych gospodarza")
+                return;
+            }
+
+            const id = match[1];
+            const fname = match[2];
+            const lname = match[3];
+
+            console.log(match);
+            console.log(id, fname, lname);
+    
+            const newHostRow = document.createElement("tr");
+    
+            newHostRow.appendChild(createTextTableField(String(id)));
+            newHostRow.appendChild(createTextTableField(fname));
+            newHostRow.appendChild(createTextTableField(lname));    
+            newHostRow.appendChild(createActionTableButton());
+    
+            let hostTableBody = document.getElementById("host-table-body");
+            hostTableBody.appendChild(newHostRow);
+    
+            hostNode.value = "";
+        }
+        
+        function addGuest() {
+            let fnameNode = document.getElementById("guest-fname");
+            const fname = fnameNode.value;
+            let lnameNode = document.getElementById("guest-lname");
+            const lname = lnameNode.value;
+            console.log(fname);
+            console.log(lname);
+            if (!fname || !lname) {
+            alert("Proszę wpisać imię i nazwisko.");
+            return;
+            }
+    
+            const newGuestRow = document.createElement("tr");
+    
+            let fnameTableNode = document.createElement("td");
+            fnameTableNode.textContent = fname;
+            newGuestRow.appendChild(fnameTableNode);
+    
+            let lnameTableNode = document.createElement("td");
+            lnameTableNode.textContent = lname;
+            newGuestRow.appendChild(lnameTableNode);
+    
+            let actionTableNode = document.createElement("td");
+            let actionNode = document.createElement("button");
+            actionNode.textContent = "-";
+            actionNode.onclick = function() {this.parentNode.parentNode.remove();};
+            actionTableNode.appendChild(actionNode);
+            newGuestRow.appendChild(actionTableNode);
+    
+            let guestTableBody = document.getElementById("guest-table-body");
+            guestTableBody.appendChild(newGuestRow);
+    
+            fnameNode.value = "";
+            lnameNode.value = "";
+        }
+
+        function createTextTableField(text) {
+            let lnameTableNode = document.createElement("td");
+            lnameTableNode.textContent = text;
+            return lnameTableNode;
+        }
+
+        function createActionTableButton() {
+            let actionTableNode = document.createElement("td");
+            let actionNode = document.createElement("button");
+            actionNode.textContent = "-";
+            actionNode.onclick = function() {this.parentNode.parentNode.remove();};
+            actionTableNode.appendChild(actionNode);
+            return actionTableNode;
+        }
     </script>
 {% endblock %}
