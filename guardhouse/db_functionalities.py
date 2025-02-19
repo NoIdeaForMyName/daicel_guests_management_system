@@ -13,6 +13,10 @@ from django.forms.models import model_to_dict
 
 '''
 
+def add_new_arrival_data(data):
+    # TODO
+    print("DATA:", data)
+
 def get_all_companies():
     return list(Company.objects.all().values())
 

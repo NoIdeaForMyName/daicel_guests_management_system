@@ -15,7 +15,6 @@ def get_all_hosts_data() -> tuple[dict]:
     try:
         if not MOCK:
             res = res.text
-        print("HERE: ", res)
         response = json.loads(res)
         hosts = [FullHost(**item) for item in response]
         host = {'message': hosts}, True

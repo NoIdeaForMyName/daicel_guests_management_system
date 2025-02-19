@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from database_models.models import *
 from guardhouse.forms import *
 from guardhouse.db_functionalities import *
+import json
 
 
 def home(request):
@@ -16,7 +17,7 @@ def add_guest(request):
     if not success:
         return hosts # TODO
     meetings, success = get_active_meetings_full_data()
-    print("test meeting:", meetings)
+    #print("test meeting:", meetings)
     if not success:
         return meetings # TODO
     companies = get_all_companies()
@@ -28,6 +29,13 @@ def add_guest(request):
         "meetings_data": meetings['message']
         }, request))
     #return render(request, "add_guests.html", {"formset": formset})
+
+def add_guest_process(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        add_new_arrival_data(data)
+        return JsonResponse({"message": "Guest added", "received": data})
+    return JsonResponse({"error": "Incorrect method"}, status=400)
 
 # def add_guest(request):
 #     template = loader.get_template('add_guest.html')

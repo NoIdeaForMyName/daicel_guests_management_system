@@ -1,7 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'header.css' %}">
+    {% block links %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
