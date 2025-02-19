@@ -16,12 +16,14 @@ def add_guest(request):
     if not success:
         return hosts # TODO
     meetings, success = get_active_meetings_full_data()
+    print("test meeting:", meetings)
     if not success:
         return meetings # TODO
-    companies = ["Electrolux, Whirlpool"] # TODO
+    companies = get_all_companies()
+    guests = get_all_known_guests()
     return HttpResponse(template.render({
         "companies_data": companies,
-        "registered_users_data": hosts['message'], # TODO
+        "registered_guests_data": guests,
         "hosts_data": hosts['message'],
         "meetings_data": meetings['message']
         }, request))

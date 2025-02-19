@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class Host(BaseModel):
+class FullHost(BaseModel):
     id: int
     firstname: str
     lastname: str

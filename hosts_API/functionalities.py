@@ -17,7 +17,7 @@ def get_all_hosts_data() -> tuple[dict]:
             res = res.text
         print("HERE: ", res)
         response = json.loads(res)
-        hosts = [Host(**item) for item in response]
+        hosts = [FullHost(**item) for item in response]
         host = {'message': hosts}, True
         return host
     except Exception as e:
