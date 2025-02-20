@@ -89,9 +89,9 @@ function postGuestData() {
             'company': companyValue,
             'register_number': registerNbValue,
             'description': descriptionValue,
-            'guests': guestsValues.map(guest => ({'id': guest[0], 'firstname': guest[1], 'lastname': guest[2]})),
-            'hosts': hostsValues.map(host => ({'id': host[0], 'firstname': host[1], 'lastname': host[2]})),
-            'meetings': meetingsValues.map(meeting => ({'id': meeting[0], 'start_time': meeting[2], 'end_time': meeting[3], 'date': meeting[1], 'description': meeting[4]}))
+            'guests': guestsValues.map(guest => ({'id': Number(guest[0]), 'firstname': guest[1], 'lastname': guest[2]})),
+            'hosts': hostsValues.map(host => ({'id': Number(host[0]), 'firstname': host[1], 'lastname': host[2]})),
+            'meetings': meetingsValues.map(meeting => ({'id': Number(meeting[0]), 'start_time': meeting[2], 'end_time': meeting[3], 'date': meeting[1], 'description': meeting[4]}))
         })
     }
 }

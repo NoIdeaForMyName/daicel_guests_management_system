@@ -30,11 +30,14 @@ def add_guest(request):
         }, request))
     #return render(request, "add_guests.html", {"formset": formset})
 
+# from django.views.decorators.csrf import csrf_exempt
+# @csrf_exempt
 def add_guest_process(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        add_new_arrival_data(data)
-        return JsonResponse({"message": "Guest added", "received": data})
+        response, success = add_new_arrival_data(data)
+        return JsonResponse(response, status=(400 if not success else 200))
+        #return JsonResponse({"message": "Guest added", "received": data})
     return JsonResponse({"error": "Incorrect method"}, status=400)
 
 # def add_guest(request):

@@ -21,12 +21,12 @@ class Guest(models.Model):
     def __str__(self):
         return f"{self.firstname} {self.lastname}"
 
-class Host(models.Model):
-    class Meta:
-        db_table = "Hosts"
+# class Host(models.Model):
+#     class Meta:
+#         db_table = "Hosts"
 
-    def __str__(self):
-        return f"Host {self.id}"
+#     def __str__(self):
+#         return f"Host {self.id}"
 
 class Car(models.Model):
     register_number = models.CharField(max_length=10, unique=True)
@@ -36,6 +36,12 @@ class Car(models.Model):
 
     def __str__(self):
         return self.register_number
+    
+    @classmethod
+    def validate_register_number(cls, register_nb):
+        # TODO
+        return True
+
 
 class Meeting(models.Model):
     author = models.IntegerField()
@@ -60,7 +66,7 @@ class Arrival(models.Model):
         db_table = "Arrivals"
 
     def __str__(self):
-        return f"{self.guest}{"; " + self.car if self.car != None else ""}; {self.arrival_timestamp.strftime(DATETIME_FORMAT)}; {self.leave_timestamp.strftime(DATETIME_FORMAT)}; {self.arrival_purpose}"
+        return f"{str(self.guest)}{"; " + str(self.car) if self.car != None else ""}; {self.arrival_timestamp.strftime(DATETIME_FORMAT)}{"; " + self.leave_timestamp.strftime(DATETIME_FORMAT) if self.leave_timestamp else ""}; {self.arrival_purpose}"
 
 
 class Participation(models.Model):
@@ -72,11 +78,12 @@ class Participation(models.Model):
         unique_together = ('arrival', 'meeting')
 
     def __str__(self):
-        return f"Participation: {self.arrival} in {self.meeting}"
+        return f"Participation: {str(self.arrival)} in {str(self.meeting)}"
 
 
 class Leadership(models.Model):
-    host = models.ForeignKey(Host, on_delete=models.RESTRICT)
+    #host = models.ForeignKey(Host, on_delete=models.RESTRICT)
+    host = models.IntegerField()
     meeting = models.ForeignKey(Meeting, on_delete=models.RESTRICT)
 
     class Meta:
@@ -84,10 +91,11 @@ class Leadership(models.Model):
         unique_together = ('host', 'meeting')
 
     def __str__(self):
-        return f"Leadership: {self.host} in {self.meeting}"
+        return f"Leadership: {self.host} in {str(self.meeting)}"
 
 class Responsibility(models.Model):
-    host = models.ForeignKey(Host, on_delete=models.RESTRICT)
+    #host = models.ForeignKey(Host, on_delete=models.RESTRICT)
+    host = models.IntegerField()
     arrival = models.ForeignKey(Arrival, on_delete=models.RESTRICT)
 
     class Meta:
@@ -95,4 +103,4 @@ class Responsibility(models.Model):
         unique_together = ('host', 'arrival')
 
     def __str__(self):
-        return f"Responsibility: {self.host} for {self.arrival}"
+        return f"Responsibility: {self.host} for {str(self.arrival)}"

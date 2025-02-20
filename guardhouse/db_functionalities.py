@@ -2,7 +2,7 @@ from database_models.models import *
 import hosts_API.functionalities as hosts_API
 from datetime import datetime, time
 from daicel_guests_management_system.constants import *
-from django.forms.models import model_to_dict
+from django.db import transaction
 
 
 '''
@@ -13,9 +13,103 @@ from django.forms.models import model_to_dict
 
 '''
 
+@transaction.atomic
 def add_new_arrival_data(data):
-    # TODO
-    print("DATA:", data)
+
+    print("JSON:", data)
+
+    company_name = data['company']
+    register_nb = data['register_number']
+    guests = data['guests']
+    description = data['description']
+    hosts = data['hosts']
+    meetings = data['meetings']
+
+    company_m = None
+    car_m = None
+    guests_m = []
+    meetings_m = []
+    arrivals_m = []
+    hosts_m_API = []
+
+    all_hosts, success = hosts_API.get_all_hosts_data()
+    if not success:
+        return all_hosts, success
+    all_hosts = set(all_hosts['message'])
+
+    company_m = Company.objects.filter(name=company_name).first()
+    if company_m == None:
+        company_m = Company(name=company_name)
+        company_m.save()
+    
+    if not Car.validate_register_number(register_nb):
+        transaction.set_rollback(True)
+        return {'error': f"Incorrect register number {register_nb}"}, False
+    car_m = Car.objects.filter(register_number=register_nb).first()
+    if car_m == None:
+        car_m = Car(register_number=register_nb)
+        car_m.save()
+    
+    for guest in guests:
+        guest_m = None
+        if guest['id'] != -1:
+            guest_m = Guest.objects.filter(id=guest['id']).first()
+            if guest_m == None or (guest_m.firstname, guest_m.lastname) != (guest['firstname]'], guest['lastname']):
+                transaction.set_rollback(True)
+                return {'error': f"Provided guest id doesn't match the one from the database"}, False
+            guest_m.company = company_m
+        else:
+            guest_m = Guest(
+                firstname=guest['firstname'],
+                lastname=guest['lastname'],
+                company=company_m
+            )
+        guest_m.save()
+        guests_m.append(guest_m)
+        
+    # 'meetings': [{'id': '2', 'start_time': '08:31', 'end_time': '15:00', 'date': '02/19/2025', 'description': 'Vivamus malesuada elementum, maecenas molestie ...'}]
+    for meeting in meetings:
+        meeting_m = Meeting.objects.filter(id=meeting['id']).first()
+        if meeting_m == None:
+            transaction.set_rollback(True)
+            return {'error': f"Provided meeting: {meeting} is incorrect"}, False
+        meetings_m.append(meeting_m)
+
+    for host_API in hosts:
+        #host_m_API = [host for host in all_hosts if (host.id, host.firstname, host.lastname) == (host_API['id'], host_API['firstname'], host_API['lastname'])]
+        #host_m_API = None if host_m_API == [] else host_m_API
+        host_m_API = hosts_API.FullHost(**host_API)
+        if not host_m_API in all_hosts:
+            transaction.set_rollback(True)
+            return {'error': f"Given host: {host_API} doesn't exists in the database"}, False
+        hosts_m_API.append(host_m_API)
+
+    for guest_m in guests_m:
+        arrival_m = Arrival(
+            guest = guest_m,
+            car = car_m,
+            arrival_purpose = description,
+            arrival_timestamp = datetime.now(),
+        )
+        arrival_m.save()
+        arrivals_m.append(arrival_m)
+
+        for host_m_API in hosts_m_API:
+            responsibility_m = Responsibility(
+                host = host_m_API.id,
+                arrival = arrival_m
+            )
+            responsibility_m.save()
+
+        for meeting_m in meetings_m:
+            participation_m = Participation(
+                arrival = arrival_m,
+                meeting = meeting_m
+            )
+            participation_m.save()
+
+    return {'message': f"Arrivals added succesfully: {data}"}, True
+
 
 def get_all_companies():
     return list(Company.objects.all().values())
@@ -57,7 +151,7 @@ def get_active_meetings_full_data(from_today=True):
     if not success:
         return hosts, success
     def meeting_to_dict(meeting):
-        hosts_set = set(map(lambda host: host.id, Host.objects.filter(leadership__meeting=meeting)))
+        hosts_set = set(map(lambda leadership: leadership.host, Leadership.objects.filter(meeting=meeting)))
         full_hosts, success = hosts_API.get_all_hosts_data()
         if not success:
             return full_hosts, success
