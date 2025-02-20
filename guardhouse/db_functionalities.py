@@ -37,10 +37,11 @@ def add_new_arrival_data(data):
         return all_hosts, success
     all_hosts = set(all_hosts['message'])
 
-    company_m = Company.objects.filter(name=company_name).first()
-    if company_m == None:
-        company_m = Company(name=company_name)
-        company_m.save()
+    if company_name:
+        company_m = Company.objects.filter(name=company_name).first()
+        if company_m == None:
+            company_m = Company(name=company_name)
+            company_m.save()
     
     if not Car.validate_register_number(register_nb):
         transaction.set_rollback(True)
@@ -57,12 +58,10 @@ def add_new_arrival_data(data):
             if guest_m == None or (guest_m.firstname, guest_m.lastname) != (guest['firstname]'], guest['lastname']):
                 transaction.set_rollback(True)
                 return {'error': f"Provided guest id doesn't match the one from the database"}, False
-            guest_m.company = company_m
         else:
             guest_m = Guest(
                 firstname=guest['firstname'],
                 lastname=guest['lastname'],
-                company=company_m
             )
         guest_m.save()
         guests_m.append(guest_m)
@@ -89,7 +88,8 @@ def add_new_arrival_data(data):
             guest = guest_m,
             car = car_m,
             arrival_purpose = description,
-            arrival_timestamp = datetime.now(),
+            #arrival_timestamp = datetime.now(),
+            company = company_m
         )
         arrival_m.save()
         arrivals_m.append(arrival_m)
@@ -122,7 +122,6 @@ def __guest_to_dict(guest):
         "id": guest.id,
         "firstname": guest.firstname,
         "lastname": guest.lastname,
-        "company": Company.objects.filter(id=guest.company_id).values()[0]
     }
 
 

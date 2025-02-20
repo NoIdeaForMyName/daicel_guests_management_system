@@ -13,7 +13,6 @@ class Company(models.Model):
 class Guest(models.Model):
     firstname = models.CharField(max_length=30)
     lastname = models.CharField(max_length=30)
-    company = models.ForeignKey(Company, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Guests"
@@ -61,6 +60,7 @@ class Arrival(models.Model):
     arrival_purpose = models.TextField()
     arrival_timestamp = models.DateTimeField(auto_now_add=True)
     leave_timestamp = models.DateTimeField(null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.RESTRICT, null=True, blank=True)
 
     class Meta:
         db_table = "Arrivals"
