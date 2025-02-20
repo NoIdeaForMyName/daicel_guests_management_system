@@ -26,6 +26,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
     Array.from(meetingDetailsList).forEach(element => {
         element.addEventListener("click", () => addMeeting(element));
     });
+
+    companyNameInput.addEventListener("blur", () => {
+        const companyName = companyNameInput.value;
+        if (!(companies_data_json.map(comp_data => comp_data.name)).includes(companyName)) {
+            alert("Wprowadzona nazwa firmy jest nieznana i zostanie dodana. Jeśli to błąd - zmień nazwę firmy")
+        }
+
+    });
 });
 
 function getDataFromTable(tableBody) {
@@ -79,10 +87,10 @@ function postGuestData() {
         return;
     }
 
-    if (meetingsCollide(meetingsValues)) {
-        alert("Wybrane spotkania kolidują ze sobą!");
-        return;
-    }
+    // if (meetingsCollide(meetingsValues)) {
+    //     alert("Wybrane spotkania kolidują ze sobą!");
+    //     return;
+    // }
 
     if (confirm(`Czy napewno chcesz dodać gościa?\nCzas przybycia: ${new Date()}`)) {
         sendFormToServer({
@@ -157,7 +165,7 @@ function validateRegisterNb(registerNb) {
 //         "company": 
 //     }
 // }
-
+ 
 function addMeeting(meeting_data) {
     const MAX_MEETING_DESCRIPTION_LENGTH = 50
 
@@ -181,6 +189,11 @@ function addMeeting(meeting_data) {
 
     let meetingTableBody = document.getElementById("meeting-table-body");
     meetingTableBody.appendChild(newMeetingRow);
+
+    if (meetingsCollide(getDataFromTable(meetingTableInput))) {
+        alert("Wybrane spotkania kolidują ze sobą! Wybrane spotkanie nie zostanie dodane");
+        meetingTableBody.removeChild(newMeetingRow);
+    }
 
     document.getElementById("meeting-details-modal").style.display='none';
 }
