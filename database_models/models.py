@@ -1,5 +1,7 @@
 from django.db import models
 from daicel_guests_management_system.constants import *
+from .model_managers import MeetingManager
+from dataclasses import dataclass
 
 class Company(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -47,6 +49,8 @@ class Meeting(models.Model):
     description = models.TextField()
     start_timestamp = models.DateTimeField(auto_now_add=True)
     end_timestamp = models.DateTimeField()
+
+    objects = MeetingManager()
 
     class Meta:
         db_table = "Meetings"

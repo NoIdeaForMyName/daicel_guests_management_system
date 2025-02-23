@@ -21,3 +21,10 @@ def get_all_hosts_data() -> tuple[dict]:
         return host
     except Exception as e:
         return {'error': str(e)}, False
+
+def get_all_hosts_data_dict() -> tuple[dict]:
+    hosts, success = get_all_hosts_data()
+    if not success:
+        return hosts, success
+    hosts_dict = [host.to_dict() for host in hosts['message']]
+    return {'message': hosts_dict}, True
