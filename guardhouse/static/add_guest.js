@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     companyNameInput.addEventListener("blur", () => {
         const companyName = companyNameInput.value;
-        if (!(companies_data_json.map(comp_data => comp_data.name)).includes(companyName)) {
+        if (!validateCompany(companyName)) {
             alert("Wprowadzona nazwa firmy jest nieznana i zostanie dodana. Jeśli to błąd - zmień nazwę firmy")
         }
 
@@ -52,7 +52,7 @@ function getGuestsData() {
     
 }
 
-function postGuestData() {
+async function postGuestData() {
     let companyValue = companyNameInput.value;
     let registerNbValue = registerNumberInput.value;
     let descriptionValue = descriptionInput.value;
@@ -60,11 +60,11 @@ function postGuestData() {
     let hostsValues = getDataFromTable(hostTableInput);
     let meetingsValues = getDataFromTable(meetingTableInput);
 
-    if (!validateCompany(companyValue)) {
-        alert("Nieprawidłowa nazwa firmy!");
-        companyNameInput.textContent = "";
-        return;
-    }
+    // if (!validateCompany(companyValue)) {
+    //     alert("Nieprawidłowa nazwa firmy!");
+    //     companyNameInput.textContent = "";
+    //     return;
+    // }
 
     if (!validateRegisterNb(registerNbValue)) {
         alert("Nieprawidłowy numer tablicy rejestracyjnej!");
@@ -101,6 +101,11 @@ function postGuestData() {
             'hosts': hostsValues.map(host => ({'id': Number(host[0]), 'firstname': host[1], 'lastname': host[2]})),
             'meetings': meetingsValues.map(meeting => ({'id': Number(meeting[0]), 'start_time': meeting[2], 'end_time': meeting[3], 'date': meeting[1], 'description': meeting[4]}))
         })
+            .then(message => {
+                //clearForm();
+                alert('Wpis został dodany pomyślnie');
+            })
+            .catch(error => alert(error));
     }
 }
 
@@ -121,18 +126,21 @@ function meetingsCollide(meetings) {
     }
 }
 
-function sendFormToServer(json) {
-    fetch('/guardhouse/add-guest-process', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
-        },
-        body: JSON.stringify(json)
-    })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
+async function sendFormToServer(json) {
+    try {
+        let response = await fetch('/guardhouse/add-guest-process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify(json)
+        });
+        response = await response.json();
+        return response;
+    } catch (error) {
+        return error;
+    }
 }
 
 function getCookie(name) {
@@ -165,6 +173,15 @@ function validateRegisterNb(registerNb) {
 //         "company": 
 //     }
 // }
+
+function clearForm() {
+    companyNameInput.value = '';
+    registerNumberInput.value = '';
+    descriptionInput.value = '';
+    guestTableInput.innerHTML = ''
+    hostTableInput.innerHTML = ''
+    meetingTableInput.innerHTML = ''
+}
  
 function addMeeting(meeting_data) {
     const MAX_MEETING_DESCRIPTION_LENGTH = 50
