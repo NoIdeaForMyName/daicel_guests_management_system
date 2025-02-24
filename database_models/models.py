@@ -2,11 +2,11 @@ from django.db import models
 from daicel_guests_management_system.constants import *
 from .model_managers import MeetingManager
 from dataclasses import dataclass
-from django.core.cache import caches
+#from django.core.cache import caches
 from hosts_API import functionalities as hosts_API
 
 
-CACHE = caches['default']
+#CACHE = caches['default']
 
 class Company(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -34,15 +34,14 @@ class Guest(models.Model):
 #     def __str__(self):
 #         return f"Host {self.id}"
 # class HostManager(models.Manager):
-#     cache_key = 'cached-hosts'
-#     cache_sentinel = object()
-#     cache_timeout = 60 * 10
 
 #     def get_queryset(self):
-#         # hosts_API.get_all_hosts_data()
-#         hosts = CACHE.get(self.cache_key, self.cache_sentinel)
-#         if hosts is self.cache_sentinel:
-#             data, success = hosts_API.get_all_hosts_data()
+#         data, success = hosts_API.get_all_hosts_data()
+#         if success:
+#             data = data['message']
+#         else:
+#             data = []
+        
 
 
 
@@ -77,11 +76,13 @@ class Meeting(models.Model):
 
 class Arrival(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.RESTRICT)
-    car = models.ForeignKey(Car, on_delete=models.RESTRICT)
+    car = models.ForeignKey(Car, on_delete=models.RESTRICT, null=True, blank=True)
     arrival_purpose = models.TextField()
     arrival_timestamp = models.DateTimeField(auto_now_add=True)
     leave_timestamp = models.DateTimeField(null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.RESTRICT, null=True, blank=True)
+
+    meetings = models.ManyToManyField(Meeting)
 
     class Meta:
         db_table = "Arrivals"
@@ -90,16 +91,16 @@ class Arrival(models.Model):
         return f"{str(self.guest)}{"; " + str(self.car) if self.car != None else ""}; {self.arrival_timestamp.strftime(DATETIME_FORMAT)}{"; " + self.leave_timestamp.strftime(DATETIME_FORMAT) if self.leave_timestamp else ""}; {self.arrival_purpose}"
 
 
-class Participation(models.Model):
-    arrival = models.ForeignKey(Arrival, on_delete=models.RESTRICT)
-    meeting = models.ForeignKey(Meeting, on_delete=models.RESTRICT)
+# class Participation(models.Model):
+#     arrival = models.ForeignKey(Arrival, on_delete=models.RESTRICT)
+#     meeting = models.ForeignKey(Meeting, on_delete=models.RESTRICT)
 
-    class Meta:
-        db_table = "Participations"
-        unique_together = ('arrival', 'meeting')
+#     class Meta:
+#         db_table = "Participations"
+#         unique_together = ('arrival', 'meeting')
 
-    def __str__(self):
-        return f"Participation: {str(self.arrival)} in {str(self.meeting)}"
+#     def __str__(self):
+#         return f"Participation: {str(self.arrival)} in {str(self.meeting)}"
 
 
 class Leadership(models.Model):

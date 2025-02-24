@@ -48,13 +48,14 @@ class HostNewGuestsService:
                 company_m = Company(name=company_name)
                 company_m.save()
         
-        if not Car.validate_register_number(register_nb):
-            transaction.set_rollback(True)
-            return {'error': f"Incorrect register number {register_nb}"}, False
-        car_m = Car.objects.filter(register_number=register_nb).first()
-        if car_m == None:
-            car_m = Car(register_number=register_nb)
-            car_m.save()
+        if register_nb:
+            if not Car.validate_register_number(register_nb):
+                transaction.set_rollback(True)
+                return {'error': f"Incorrect register number {register_nb}"}, False
+            car_m = Car.objects.filter(register_number=register_nb).first()
+            if car_m == None:
+                car_m = Car(register_number=register_nb)
+                car_m.save()
         
         for guest in guests:
             guest_m = None
@@ -107,11 +108,13 @@ class HostNewGuestsService:
                 responsibility_m.save()
 
             for meeting_m in meetings_m:
-                participation_m = Participation(
-                    arrival = arrival_m,
-                    meeting = meeting_m
-                )
-                participation_m.save()
+                arrival_m.meetings.add(meeting_m)
+                # participation_m = Participation(
+                #     arrival = arrival_m,
+                #     meeting = meeting_m
+                # )
+                # participation_m.save()
+            arrival_m.save()
 
         return {'message': f"Arrivals added succesfully: {data}"}, True
 
