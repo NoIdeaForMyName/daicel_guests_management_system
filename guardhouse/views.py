@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template import loader
 from database_models.models import *
 from guardhouse.forms import *
-from guardhouse.services import HostNewGuestsService, MeetingService
-from database_models.models import Company, Guest, Car, Meeting, Arrival, Participation, Leadership, Responsibility
+from guardhouse.services import HostNewGuestsService, MeetingService, ActiveGuestsService
+from database_models.models import Company, Guest, Car, Meeting, Arrival, Leadership, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
 
@@ -35,14 +35,42 @@ def add_guest_process(request):
     if request.method == "POST":
         data = json.loads(request.body)
         response, success = HostNewGuestsService.add_new_arrival_data(data)
-        return JsonResponse(response, status=(400 if not success else 200))
+        if success:
+            return JsonResponse({"message": "Arrival added succesfully"}, status=200)
+        else:
+            return JsonResponse({"error": response}, status=400)
         #return JsonResponse({"message": "Guest added", "received": data})
     return JsonResponse({"error": "Incorrect method"}, status=400)
 
 
 def active_guests(request):
+    active_guests_service = ActiveGuestsService()
+
+    if request.method == "POST":
+        arrival_id = request.POST.get('arrival_id')
+        try:
+            arrival_id = int(arrival_id)
+        except:
+            return HttpResponseBadRequest("Wrong request body - id should be a number")
+        active_guests_service.end_arrival(arrival_id)
+        return redirect("active-guests")
+
     template = loader.get_template('active_guests.html')
-    return HttpResponse(template.render())
+
+    active_guests_nb = active_guests_service.active_guests_count()
+    guests_car_nb_at_workplace = active_guests_service.all_cars_at_workplace()
+
+    active_arrivals, success = active_guests_service.active_arrivals_context()
+    if not success:
+        return active_arrivals # TODO
+    active_arrivals = active_arrivals['message']
+    #print(active_arrivals)
+
+    return HttpResponse(template.render({
+            'guest_nb': active_guests_nb,
+            'cars_nb': guests_car_nb_at_workplace,
+            'active_arrivals': active_arrivals
+        }, request))
 
 
 def guests_history(request):

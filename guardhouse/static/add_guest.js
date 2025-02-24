@@ -101,11 +101,14 @@ async function postGuestData() {
             'hosts': hostsValues.map(host => ({'id': Number(host[0]), 'firstname': host[1], 'lastname': host[2]})),
             'meetings': meetingsValues.map(meeting => ({'id': Number(meeting[0]), 'start_time': meeting[2], 'end_time': meeting[3], 'date': meeting[1], 'description': meeting[4]}))
         })
-            .then(message => {
-                //clearForm();
-                alert('Wpis został dodany pomyślnie');
-            })
-            .catch(error => alert(error));
+        .then(response => {
+            clearForm();
+            location.reload();
+            scrollTop();
+        })
+        .catch(error => {
+            alert(`Error: ${error}`)}
+        );
     }
 }
 
@@ -126,21 +129,24 @@ function meetingsCollide(meetings) {
     }
 }
 
-async function sendFormToServer(json) {
-    try {
-        let response = await fetch('/guardhouse/add-guest-process', {
+function sendFormToServer(json) {
+        return fetch('/guardhouse/add-guest-process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
             body: JSON.stringify(json)
+        })
+        .then(response => {
+            return response.json()
+            .then(data => {
+                if (!response.ok) {
+                    throw new Error(JSON.stringify(data));
+                }
+                return data;
+            });
         });
-        response = await response.json();
-        return response;
-    } catch (error) {
-        return error;
-    }
 }
 
 function getCookie(name) {
@@ -181,6 +187,11 @@ function clearForm() {
     guestTableInput.innerHTML = ''
     hostTableInput.innerHTML = ''
     meetingTableInput.innerHTML = ''
+}
+
+function scrollTop() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
 }
  
 function addMeeting(meeting_data) {

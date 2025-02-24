@@ -99,3 +99,8 @@ th {
     text-decoration: none;
     cursor: pointer;
 }
+
+.long-text {
+    max-height: 200px;
+    overflow-y: scroll;
+}

@@ -9,5 +9,62 @@
 {% endblock %}
 
 {% block content %}
-    <h1>AKTYWNI GOŚCIE TODO</h1>
+    <div id="statistics">
+        <table id="statistics-table">
+            <tbody>
+                <tr>
+                    <td>Liczba gości: {{ guest_nb }}</td>
+                    <td>Liczba aut: {{ cars_nb }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="arrivals">
+        <table id="arrivals-table">
+            <thead>
+                <tr>
+                    <th>Imię Nazwisko</th>
+                    <th>Numer rejestracyjny</th>
+                    <th>Data przybycia</th>
+                    <th>Cel przybycia</th>
+                    <th>Uczestnictwo w spotkaniach</th>
+                    <th>Osoby odpowiedzialne</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody id="arrivals-table-body">
+                {% for arrival in active_arrivals %}
+                    <tr>
+                        <td>{{arrival.name}}</td>
+                        <td>
+                            {% for reg_nb in arrival.register_numbers %}
+                                <p>{{ reg_nb }}</p>
+                            {% endfor %}
+                        </td>
+                        <td>{{arrival.arrival_timestamp}}</td>
+                        <td>{{arrival.description}}</td>
+                        <td>
+                            <div class="long-text">
+                                {% for meeting in arrival.meetings %}
+                                    <p><b>Spotkanie {{ forloop.counter }}:</b> {{ meeting.description }}</p>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            {% for host in arrival.hosts %}
+                                <p>{{ host.name }}</p>
+                            {% endfor %}
+                        </td>
+                        <td class="end-arrival-button">
+                            <form method="post" onsubmit="return confirm('Czy napewno chcesz zakończyć wizytę?');">
+                                {% csrf_token %}
+                                <input name="arrival_id" type="hidden" value="{{ arrival.id }}">
+                                <button type="submit">Zakończ wizytę</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
