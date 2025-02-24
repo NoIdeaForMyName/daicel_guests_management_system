@@ -60,7 +60,7 @@ class HostNewGuestsService:
             guest_m = None
             if guest['id'] != -1:
                 guest_m = Guest.objects.filter(id=guest['id']).first()
-                if guest_m == None or (guest_m.firstname, guest_m.lastname) != (guest['firstname]'], guest['lastname']):
+                if guest_m == None or (guest_m.firstname, guest_m.lastname) != (guest['firstname'], guest['lastname']):
                     transaction.set_rollback(True)
                     return {'error': f"Provided guest id doesn't match the one from the database"}, False
             else:
