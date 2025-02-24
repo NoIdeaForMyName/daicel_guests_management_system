@@ -2,6 +2,11 @@ from django.db import models
 from daicel_guests_management_system.constants import *
 from .model_managers import MeetingManager
 from dataclasses import dataclass
+from django.core.cache import caches
+from hosts_API import functionalities as hosts_API
+
+
+CACHE = caches['default']
 
 class Company(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -28,6 +33,18 @@ class Guest(models.Model):
 
 #     def __str__(self):
 #         return f"Host {self.id}"
+# class HostManager(models.Manager):
+#     cache_key = 'cached-hosts'
+#     cache_sentinel = object()
+#     cache_timeout = 60 * 10
+
+#     def get_queryset(self):
+#         # hosts_API.get_all_hosts_data()
+#         hosts = CACHE.get(self.cache_key, self.cache_sentinel)
+#         if hosts is self.cache_sentinel:
+#             data, success = hosts_API.get_all_hosts_data()
+
+
 
 class Car(models.Model):
     register_number = models.CharField(max_length=10, unique=True)
