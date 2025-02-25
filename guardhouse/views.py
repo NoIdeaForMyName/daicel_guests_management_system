@@ -47,12 +47,13 @@ def active_guests(request):
     active_guests_service = ActiveGuestsService()
 
     if request.method == "POST":
-        arrival_id = request.POST.get('arrival_id')
+        print("POST: ", request.POST)
+        arrival_ids = request.POST.getlist('end-visit[]')
         try:
-            arrival_id = int(arrival_id)
+            arrival_ids = [int(i) for i in arrival_ids]
         except:
             return HttpResponseBadRequest("Wrong request body - id should be a number")
-        active_guests_service.end_arrival(arrival_id)
+        active_guests_service.end_arrivals(arrival_ids)
         return redirect("active-guests")
 
     template = loader.get_template('active_guests.html')
@@ -64,7 +65,6 @@ def active_guests(request):
     if not success:
         return active_arrivals # TODO
     active_arrivals = active_arrivals['message']
-    #print(active_arrivals)
 
     return HttpResponse(template.render({
             'guest_nb': active_guests_nb,

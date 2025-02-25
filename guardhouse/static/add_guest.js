@@ -213,7 +213,7 @@ function addMeeting(meeting_data) {
     newMeetingRow.appendChild(createTextTableField(start_time));   
     newMeetingRow.appendChild(createTextTableField(end_time));   
     newMeetingRow.appendChild(createTextTableField(description));   
-    newMeetingRow.appendChild(createActionTableButton());
+    newMeetingRow.appendChild(createCheckboxTableField());
 
     let meetingTableBody = document.getElementById("meeting-table-body");
     meetingTableBody.appendChild(newMeetingRow);
@@ -256,7 +256,7 @@ function addHost() {
     newHostRow.appendChild(createTextTableField(id, display='none'));
     newHostRow.appendChild(createTextTableField(fname));
     newHostRow.appendChild(createTextTableField(lname));    
-    newHostRow.appendChild(createActionTableButton());
+    newHostRow.appendChild(createCheckboxTableField());
 
     let hostTableBody = document.getElementById("host-table-body");
     hostTableBody.appendChild(newHostRow);
@@ -287,7 +287,7 @@ function addGuest() {
     newGuestRow.appendChild(createTextTableField(id, display='none'));
     newGuestRow.appendChild(createTextTableField(fname));
     newGuestRow.appendChild(createTextTableField(lname));
-    newGuestRow.appendChild(createActionTableButton());
+    newGuestRow.appendChild(createCheckboxTableField());
 
     let guestTableBody = document.getElementById("guest-table-body");
     guestTableBody.appendChild(newGuestRow);
@@ -321,7 +321,7 @@ function createTextTableField(text, display='') {
     return tableNode;
 }
 
-function createActionTableButton() {
+function createCheckboxTableField() {
     let actionTableNode = document.createElement("td");
     let actionNode = document.createElement("button");
     actionNode.textContent = "-";

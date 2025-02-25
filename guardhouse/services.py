@@ -173,7 +173,8 @@ class ActiveGuestsService:
                 {
                     'id': arrival.id,
                     'name': f'{arrival.guest.firstname} {arrival.guest.lastname}',
-                    'register_numbers': {arrival.car.register_number if arrival.car else None},
+                    'company': arrival.company.name if arrival.company else None,
+                    'register_number': arrival.car.register_number if arrival.car else None,
                     'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
                     'description': arrival.arrival_purpose,
                     'meetings': [
@@ -193,10 +194,8 @@ class ActiveGuestsService:
             ]
         }, True
     
-    def end_arrival(self, id):
-        arrival = Arrival.objects.filter(id=id).first()
-        if not arrival:
-            return
-        arrival.leave_timestamp = datetime.now()
-        arrival.save()
-        
+    def end_arrivals(self, ids):
+        arrivals = Arrival.objects.filter(id__in=ids).all()
+        for arrival in arrivals:
+            arrival.leave_timestamp = datetime.now()
+            arrival.save()
