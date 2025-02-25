@@ -112,6 +112,9 @@ function filterRows() {
         let fulfills = true;
         for (let i=0; i < values.length; i++) {
             let value = values[i];
+            if (value === '') {
+                continue;
+            }
             let column = columns[i];
             let columnValue;
             if (column === 'firstname' || column === 'lastname') {
@@ -120,7 +123,7 @@ function filterRows() {
             else {
                 columnValue = arrival[column];
             }
-            if (!columnValue && value !== '') {
+            if (!columnValue) {
                 fulfills = false;
                 break;
             }
