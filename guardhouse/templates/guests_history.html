@@ -1,4 +1,9 @@
 {% extends "master.html" %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'guests_history.js' %}" type="module"></script>
+{% endblock %}
 
 {% block title %}
     Historia gości
@@ -9,5 +14,37 @@
 {% endblock %}
 
 {% block content %}
-    <h1>HISTORIA GOŚCI TODO</h1>
+
+    <div id="filters">
+        <input id="firstname-filter" type="text" placeholder="Wpisz imię">
+        <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
+        <input id="company-filter" type="text" placeholder="Wpisz firmę">
+        <input id="car-filter" type="text" placeholder="Wpisz numer tablicy rejestracyjnej">
+        <input id="arrival-date-start-filter" type="date" placeholder="Podaj datę">
+        <input id="arrival-date-end-filter" type="date" placeholder="Podaj datę">
+        <input id="arrival-time-start-filter" type="time" placeholder="Podaj ">
+        <input id="arrival-time-end-filter" type="time" placeholder="Wpisz numer tablicy rejestracyjnej">
+    </div>
+
+    <div id="arrivals">
+        <table id="arrivals-table">
+            <thead>
+                <tr>
+                    <th hidden>id</th>
+                    <th>Imię Nazwisko</th>
+                    <th>Firma</th>
+                    <th>Numer rejestracyjny</th>
+                    <th>Data przybycia</th>
+                    <th>Data opuszczenia</th>
+                    <th>Cel przybycia</th>
+                    <th>Uczestnictwo w spotkaniach</th>
+                    <th>Osoby odpowiedzialne</th>
+                </tr>
+            </thead>
+            <tbody id="arrivals-table-body"></tbody>
+        </table>
+    </div>
+
+    {{ archive_arrivals|json_script:"archive_arrivals_json" }}
+
 {% endblock %}

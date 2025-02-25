@@ -199,3 +199,48 @@ class ActiveGuestsService:
         for arrival in arrivals:
             arrival.leave_timestamp = datetime.now()
             arrival.save()
+
+
+class GuestsHistoryService:
+
+    def __init__(self):
+        self.archive_arrivals = (Arrival.objects.filter(~Q(leave_timestamp=None))
+            .select_related('guest')
+            .select_related('car')
+            .select_related('company')
+            .prefetch_related('meetings')
+            .prefetch_related('responsibility_set')
+            .all()
+        )
+
+    def archive_arrivals_context(self):
+        full_hosts, success = hosts_API.get_all_hosts_data()
+        if not success:
+            return full_hosts, success
+        full_hosts = full_hosts['message']
+        return {'message': 
+            [
+                {
+                    'id': arrival.id,
+                    'name': f'{arrival.guest.firstname} {arrival.guest.lastname}',
+                    'company': arrival.company.name if arrival.company else None,
+                    'register_number': arrival.car.register_number if arrival.car else None,
+                    'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
+                    'leave_timestamp': arrival.leave_timestamp.strftime(DATETIME_FORMAT),
+                    'description': arrival.arrival_purpose,
+                    'meetings': [
+                        {
+                            'description': meeting.description
+                        }
+                        for meeting in arrival.meetings.all()
+                    ],
+                    'hosts': [
+                        {
+                            'name': f'{host.firstname} {host.lastname}'
+                        }
+                        for host in [h for h in full_hosts if h.id in map(lambda r: r['host'], arrival.responsibility_set.all().values('host'))]
+                    ]
+                }
+                for arrival in self.archive_arrivals
+            ]
+        }, True

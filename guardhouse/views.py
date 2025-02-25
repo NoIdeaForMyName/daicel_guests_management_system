@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template import loader
 from database_models.models import *
 from guardhouse.forms import *
-from guardhouse.services import HostNewGuestsService, MeetingService, ActiveGuestsService
+from guardhouse.services import HostNewGuestsService, MeetingService, ActiveGuestsService, GuestsHistoryService
 from database_models.models import Company, Guest, Car, Meeting, Arrival, Leadership, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
@@ -74,5 +74,15 @@ def active_guests(request):
 
 
 def guests_history(request):
+    guests_history_service = GuestsHistoryService()
+
     template = loader.get_template('guests_history.html')
-    return HttpResponse(template.render())
+
+    archive_arrivals, success = guests_history_service.archive_arrivals_context()
+    if not success:
+        return archive_arrivals # TODO
+    archive_arrivals = archive_arrivals['message']
+
+    return HttpResponse(template.render({
+            'archive_arrivals': archive_arrivals
+        }, request))

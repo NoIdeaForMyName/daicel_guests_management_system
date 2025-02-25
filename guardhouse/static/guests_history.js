@@ -1,18 +1,20 @@
 import { createTextTableField, filterRows } from './guests_service.js';
 
-let activeArrivals;
-//let filteredArrivals;
+let historyArrivals;
 
 let firstnameFilter;
 let lastnameFilter;
 let companyFilter;
 let carFilter;
+let arrivalDateStartFilter;
+let arrivalDateEndFilter;
+let arrivalTimeStartFilter;
+let arrivalTimeEndFilter;
 
 let arrivalsTableBody;
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    activeArrivals = JSON.parse(document.getElementById('active_arrivals_json').textContent);
-    //filteredArrivals = activeArrivals;
+    historyArrivals = JSON.parse(document.getElementById('archive_arrivals_json').textContent);
 
     arrivalsTableBody = document.getElementById("arrivals-table-body");
 
@@ -21,16 +23,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
     lastnameFilter = document.getElementById("lastname-filter");
     companyFilter = document.getElementById("company-filter");
     carFilter = document.getElementById("car-filter");
+    arrivalDateStartFilter = document.getElementById("arrival-date-start-filter");
+    arrivalDateEndFilter = document.getElementById("arrival-date-end-filter");
+    arrivalTimeStartFilter = document.getElementById("arrival-time-start-filter");
+    arrivalTimeEndFilter = document.getElementById("arrival-time-end-filter");
 
     firstnameFilter.addEventListener("input", () => filterAndDisplayRows());
     lastnameFilter.addEventListener("input", () => filterAndDisplayRows());
     companyFilter.addEventListener("input", () => filterAndDisplayRows());
     carFilter.addEventListener("input", () => filterAndDisplayRows());
+    arrivalDateStartFilter.addEventListener("input", () => filterAndDisplayRows());
+    arrivalDateEndFilter.addEventListener("input", () => filterAndDisplayRows());
+    arrivalTimeStartFilter.addEventListener("input", () => filterAndDisplayRows());
+    arrivalTimeEndFilter.addEventListener("input", () => filterAndDisplayRows());
 
-    //displayArrivals(activeArrivals);
     filterAndDisplayRows();
-
-    window.endVisitsConfirmationPopup = endVisitsConfirmationPopup;
 });
 
 function displayArrivals(arrivals) {
@@ -39,10 +46,12 @@ function displayArrivals(arrivals) {
     for (let arrival of arrivals) {
         let row = document.createElement("tr");
 
+        row.appendChild(createTextTableField(arrival.id, true));
         row.appendChild(createTextTableField(arrival.name));
         row.appendChild(createTextTableField(arrival.company));
         row.appendChild(createTextTableField(arrival.register_number));
         row.appendChild(createTextTableField(arrival.arrival_timestamp));
+        row.appendChild(createTextTableField(arrival.leave_timestamp));
         row.appendChild(createTextTableField(arrival.description));
         
         let long_text_container = document.createElement("div");
@@ -63,53 +72,33 @@ function displayArrivals(arrivals) {
         }
         row.appendChild(hostsTableNode);
 
-        row.appendChild(createCheckboxTableField(arrival.id));
-
         arrivalsTableBody.appendChild(row);
     }
 }
 
-function createCheckboxTableField(id) {
-    let actionTableNode = document.createElement("td");
-    let actionNode = document.createElement("input");
-    actionNode.type = "checkbox";
-    actionNode.name = "end-visit[]";
-    actionNode.value = id;
-    actionTableNode.appendChild(actionNode);
-    return actionTableNode;
-}
-
 function filterAndDisplayRows() {
     let filtered = filterRows(
-        activeArrivals, 
+        historyArrivals, 
         [
             firstnameFilter.value,
             lastnameFilter.value,
             companyFilter.value,
-            carFilter.value
+            carFilter.value,
+            arrivalDateStartFilter.value,
+            arrivalDateEndFilter.value,
+            arrivalTimeStartFilter.value,
+            arrivalTimeEndFilter.value
         ],
         [
             'firstname',
             'lastname',
             'company',
-            'register_number'
+            'register_number',
+            'date_start',
+            'date_end',
+            'time_start',
+            'time_end'
         ]
     );
     displayArrivals(filtered);
-}
-
-export function endVisitsConfirmationPopup() {
-    let counter = 0;
-    document.getElementsByName("end-visit[]").forEach(el => {
-        if (el.checked) {
-            counter++;
-        }
-    });
-
-    if (counter === 0) {
-        alert("Nie wybrano żadnej wizyty!");
-        return false;
-    }
-
-    return confirm(`Czy na pewno chcesz zakończyć wybrane wizyty? Liczba wybranych wizyt: ${counter}`);
 }
