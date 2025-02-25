@@ -133,7 +133,8 @@ STATIC_URL = 'static/'
 #STATIC_ROOT = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "guardhouse" / "static"
+    BASE_DIR / "guardhouse" / "static",
+    BASE_DIR / "daicel_guests_management_system" / "static"
     ]
 
 # Default primary key field type
