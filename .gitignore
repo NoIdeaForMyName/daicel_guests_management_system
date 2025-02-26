@@ -34,6 +34,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.venv/
 env/
 build/
 develop-eggs/
@@ -87,3 +88,9 @@ local_settings.py
 
 .env
 db.sqlite3
+
+### VSCode ###
+.vscode/
+
+### PyCharm ###
+.idea/
