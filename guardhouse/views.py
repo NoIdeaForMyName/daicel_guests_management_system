@@ -7,12 +7,15 @@ from guardhouse.services import HostNewGuestsService, MeetingService, ActiveGues
 from database_models.models import Company, Guest, Car, Meeting, Arrival, Leadership, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
+from .security import validate_ip
 
 
+@validate_ip
 def home(request):
     template = loader.get_template('guardhouse/home.html')
     return HttpResponse(template.render())
 
+@validate_ip
 def add_guest(request):
     template = loader.get_template('guardhouse/add_guest.html')
     hosts, success = hosts_API.get_all_hosts_data_dict()
@@ -31,6 +34,7 @@ def add_guest(request):
         "meetings_data": meetings['message']
         }, request))
 
+@validate_ip
 def add_guest_process(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -43,6 +47,7 @@ def add_guest_process(request):
     return JsonResponse({"error": "Incorrect method"}, status=400)
 
 
+@validate_ip
 def active_guests(request):
     active_guests_service = ActiveGuestsService()
 
@@ -73,6 +78,7 @@ def active_guests(request):
         }, request))
 
 
+@validate_ip
 def guests_history(request):
     guests_history_service = GuestsHistoryService()
 
