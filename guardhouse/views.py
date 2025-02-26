@@ -10,11 +10,11 @@ import json
 
 
 def home(request):
-    template = loader.get_template('home.html')
+    template = loader.get_template('guardhouse/home.html')
     return HttpResponse(template.render())
 
 def add_guest(request):
-    template = loader.get_template('add_guest.html')
+    template = loader.get_template('guardhouse/add_guest.html')
     hosts, success = hosts_API.get_all_hosts_data_dict()
     if not success:
         return hosts # TODO
@@ -56,7 +56,7 @@ def active_guests(request):
         active_guests_service.end_arrivals(arrival_ids)
         return redirect("active-guests")
 
-    template = loader.get_template('active_guests.html')
+    template = loader.get_template('guardhouse/active_guests.html')
 
     active_guests_nb = active_guests_service.active_guests_count()
     guests_car_nb_at_workplace = active_guests_service.all_cars_at_workplace()
@@ -76,7 +76,7 @@ def active_guests(request):
 def guests_history(request):
     guests_history_service = GuestsHistoryService()
 
-    template = loader.get_template('guests_history.html')
+    template = loader.get_template('guardhouse/guests_history.html')
 
     archive_arrivals, success = guests_history_service.archive_arrivals_context()
     if not success:
