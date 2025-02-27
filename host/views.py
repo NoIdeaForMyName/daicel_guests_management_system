@@ -6,23 +6,55 @@ from database_models.models import Company, Guest, Car, Meeting, Arrival, Leader
 import hosts_API.functionalities as hosts_API
 import json
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
 
+def login_host(request):
+    template = loader.get_template('host/login.html')
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            next_ = form.cleaned_data['next']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect(next_)
+            else:
+                return HttpResponse(template.render({
+                    "wrong_credentials": True,
+                    "form": LoginForm(initial={'next': next_})
+                }, request))
+    else:
+        return HttpResponse(template.render({
+            "wrong_credentials": False,
+            "form": LoginForm(initial={'next': request.GET['next']})
+        }, request))
+
+@login_required(login_url="/host/login/")
 def home(request):
     template = loader.get_template('host/home.html')
     return HttpResponse(template.render())
 
+@login_required(login_url="/host/login/")
 def new_meeting(request):
+    print("AM INSIDE")
     template = loader.get_template('host/new_meeting.html')
     return HttpResponse(template.render())
 
+@login_required(login_url="/host/login/")
 def my_guests(request):
     template = loader.get_template('host/my_guests.html')
     return HttpResponse(template.render())
 
+@login_required(login_url="/host/login/")
 def my_meetings(request):
     template = loader.get_template('host/my_meetings.html')
     return HttpResponse(template.render())
 
+@login_required(login_url="/host/login/")
 def led_meetings(request):
     template = loader.get_template('host/led_meetings.html')
     return HttpResponse(template.render())

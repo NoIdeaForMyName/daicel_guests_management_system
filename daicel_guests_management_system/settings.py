@@ -53,6 +53,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'authentication.backends.SymfoniaBackend',
+]
+
 ROOT_URLCONF = 'daicel_guests_management_system.urls'
 
 TEMPLATES = [
