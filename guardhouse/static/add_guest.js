@@ -103,7 +103,7 @@ async function postGuestData() {
         })
         .then(response => {
             clearForm();
-            location.reload();
+            //location.reload();
             scrollTop();
         })
         .catch(error => {
@@ -227,7 +227,7 @@ function addMeeting(meeting_data) {
 }
 
 function addHost() {
-    HOST_REGEX = /(\p{L}+) (\p{L}+)/u;
+    const HOST_REGEX = /(\p{L}+) (\p{L}+)/u;
     let hostNode = document.getElementById("hosts-list");
     const host = hostNode.value;
     let match = host.match(HOST_REGEX);
