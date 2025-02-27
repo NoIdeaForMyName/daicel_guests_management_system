@@ -5,6 +5,7 @@ from database_models.models import *
 from database_models.models import Company, Guest, Car, Meeting, Arrival, Leadership, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
+from .services import *
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -39,10 +40,35 @@ def home(request):
     return HttpResponse(template.render())
 
 @login_required(login_url="/host/login/")
-def new_meeting(request):
-    print("AM INSIDE")
-    template = loader.get_template('host/new_meeting.html')
-    return HttpResponse(template.render())
+def add_meeting(request):
+    template = loader.get_template('host/add_meeting.html')
+    hosts, success = hosts_API.get_all_hosts_data_dict()
+    if not success: # TODO
+        return hosts, success
+    hosts = hosts['message']
+    author = None
+    for leader in hosts:
+        if request.user.id == leader['id']:
+            author = leader
+            break
+    if author is None: # TODO
+        return HttpResponseBadRequest()
+    return HttpResponse(template.render({
+        "hosts": hosts,
+        "author": author
+    }, request))
+
+@login_required(login_url="/host/login/")
+def add_meeting_process(request):
+    print('LOLZ AM HERE')
+    if request.method == "POST":
+        data = json.loads(request.body)
+        response, success = add_new_meeting(data)
+        if success:
+            return JsonResponse({"message": "Arrival added succesfully"}, status=200)
+        else:
+            return JsonResponse(response, status=400)
+    return JsonResponse({"error": "Incorrect method"}, status=400)
 
 @login_required(login_url="/host/login/")
 def my_guests(request):
