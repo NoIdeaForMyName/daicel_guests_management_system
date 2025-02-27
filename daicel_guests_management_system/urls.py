@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('guardhouse/', include('guardhouse.urls')),
     path('host/', include('host.urls')),
+    path('', include('main_menu.urls')),
 ]

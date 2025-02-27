@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'system_settings',
     'database_models',
     'guardhouse',
-    'host'
+    'host',
+    'main_menu'
 ]
 
 MIDDLEWARE = [
@@ -142,7 +143,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "daicel_guests_management_system" / "static",
     BASE_DIR / "guardhouse" / "static",
-    BASE_DIR / "host" / "static"
+    BASE_DIR / "host" / "static",
+    BASE_DIR / "main_menu" / "static"
     ]
 
 # Default primary key field type
