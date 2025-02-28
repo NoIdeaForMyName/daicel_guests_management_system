@@ -9,6 +9,9 @@ let carFilter;
 
 let arrivalsTableBody;
 
+let arrivalsTable;
+let noDataInfo;
+
 document.addEventListener("DOMContentLoaded", (event) => {
     activeArrivals = JSON.parse(document.getElementById('active_arrivals_json').textContent);
 
@@ -19,6 +22,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
     lastnameFilter = document.getElementById("lastname-filter");
     companyFilter = document.getElementById("company-filter");
     carFilter = document.getElementById("car-filter");
+
+    arrivalsTable = document.getElementById("arrivals");
+    noDataInfo = document.getElementById("no-data-info");
 
     firstnameFilter.addEventListener("input", () => filterAndDisplayRows());
     lastnameFilter.addEventListener("input", () => filterAndDisplayRows());
@@ -33,6 +39,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 function displayArrivals(arrivals) {
     arrivalsTableBody.innerHTML = '';
+
+    arrivalsTable.style = arrivals.length > 0 ? "display:block" : "display:none;"
+    noDataInfo.style = arrivals.length < 1 ? "display:block" : "display:none;"
 
     for (let arrival of arrivals) {
         let row = document.createElement("tr");

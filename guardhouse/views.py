@@ -3,7 +3,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template import loader
 from database_models.models import *
 from guardhouse.forms import *
-from guardhouse.services import HostNewGuestsService, ActiveGuestsService, GuestsHistoryService
+from guardhouse.services import ActiveGuestsService, GuestsHistoryService, \
+    NotConfirmedArrivalsService
 from database_models.models import Company, Guest, Car, Arrival, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
@@ -37,7 +38,7 @@ def active_guests(request):
 
     active_arrivals, success = active_guests_service.active_arrivals_context()
     if not success:
-        return active_arrivals # TODO
+        return active_arrivals, success # TODO
     active_arrivals = active_arrivals['message']
 
     return HttpResponse(template.render({
@@ -55,9 +56,31 @@ def guests_history(request):
 
     archive_arrivals, success = guests_history_service.archive_arrivals_context()
     if not success:
-        return archive_arrivals # TODO
+        return archive_arrivals, success # TODO
     archive_arrivals = archive_arrivals['message']
 
     return HttpResponse(template.render({
             'archive_arrivals': archive_arrivals
         }, request))
+
+
+@validate_ip
+def not_confirmed_visits(request):
+    template = loader.get_template('guardhouse/not_confirmed_visits.html')
+    not_confirmed_arrivals_service = NotConfirmedArrivalsService()
+    message, success = not_confirmed_arrivals_service.not_confirmed_arrivals_context()
+    if not success:
+        return message, success
+    not_confirmed_arrivals = message['message']
+    return HttpResponse(template.render({
+        'not_confirmed_arrivals': not_confirmed_arrivals
+    }, request))
+
+
+@validate_ip
+def confirm_visit(request, arrival_id):
+    template = loader.get_template('guardhouse/confirm_visit.html')
+    print("ARRIVAL ID TO CONFIRM:", arrival_id)
+    return HttpResponse(template.render({
+
+    }, request))

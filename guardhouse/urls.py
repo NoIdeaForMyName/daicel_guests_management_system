@@ -9,4 +9,6 @@ urlpatterns = [
     path('add-guest-process', validate_ip(add_guest_process), name='guardhouse-add-guest-process'),
     path('active-guests', views.active_guests, name='guardhouse-active-guests'),
     path('guests-history', views.guests_history, name='guardhouse-guests-history'),
+    path('not-confirmed-visits', views.not_confirmed_visits, name='guardhouse-not-confirmed-visits'),
+    path('confirm-visit/<int:arrival_id>/', views.confirm_visit, name='guardhouse-confirm-visit'),
 ]

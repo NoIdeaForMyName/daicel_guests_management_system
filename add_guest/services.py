@@ -70,7 +70,7 @@ def add_new_arrival_data(data):
 
     for guest_m in guests_m:
         arrival_m = Arrival(
-            confirmed=True,
+            confirmed=confirmed,
             guest=guest_m,
             arrival_purpose=description,
             car=car_m,

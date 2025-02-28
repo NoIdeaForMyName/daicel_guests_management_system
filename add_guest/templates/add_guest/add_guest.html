@@ -25,9 +25,9 @@
                 {% endfor %}
             </datalist>
         <!-- <input type="text" id="company-name"> -->
-    
-        <label for="register-nb">Numer rejestracyjny</label>
-        <input type="text" id="register-nb" placeholder="opcjonalnie">
+
+        <label for="register-nb" {% if not confirmed %}style="display:none"{% endif %}>Numer rejestracyjny</label>
+        <input type="text" id="register-nb" placeholder="opcjonalnie" {% if not confirmed %}hidden{% endif %}>
     
         <label for="arrival-purpose">Cel przybycia</label>
         <textarea id="arrival-purpose" placeholder="np. Spotkanie, Prace serwisowe itp."></textarea>

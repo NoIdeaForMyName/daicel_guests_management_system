@@ -71,7 +71,7 @@ class Arrival(models.Model):
         db_table = "Arrivals"
 
     def __str__(self):
-        return f"{str(self.guest)}{"; " + str(self.car) if self.car != None else ""}; {self.arrival_timestamp.strftime(DATETIME_FORMAT)}{"; " + self.leave_timestamp.strftime(DATETIME_FORMAT) if self.leave_timestamp else ""}; {self.arrival_purpose}"
+        return f"{str(self.guest)}{"; " + str(self.car) if self.car != None else ""}{"; " + self.arrival_timestamp.strftime(DATETIME_FORMAT) if self.arrival_timestamp != None else ""}{"; " + self.leave_timestamp.strftime(DATETIME_FORMAT) if self.leave_timestamp else ""}; {self.arrival_purpose}"
 
 
 class Responsibility(models.Model):

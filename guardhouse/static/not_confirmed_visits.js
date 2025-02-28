@@ -1,23 +1,20 @@
 import { createTextTableField, filterRows } from './guests_service.js';
 
-let historyArrivals;
+let notConfirmedArrivals;
 
 let firstnameFilter;
 let lastnameFilter;
 let companyFilter;
-let carFilter;
-let arrivalDateStartFilter;
-let arrivalDateEndFilter;
-let arrivalTimeStartFilter;
-let arrivalTimeEndFilter;
 
 let arrivalsTableBody;
 
 let arrivalsTable;
 let noDataInfo;
 
+const CONFIRM_VISIT_URL = "confirm-visit/";
+
 document.addEventListener("DOMContentLoaded", (event) => {
-    historyArrivals = JSON.parse(document.getElementById('archive_arrivals_json').textContent);
+    notConfirmedArrivals = JSON.parse(document.getElementById('not_confirmed_arrivals_json').textContent);
 
     arrivalsTableBody = document.getElementById("arrivals-table-body");
 
@@ -25,11 +22,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     firstnameFilter = document.getElementById("firstname-filter");
     lastnameFilter = document.getElementById("lastname-filter");
     companyFilter = document.getElementById("company-filter");
-    carFilter = document.getElementById("car-filter");
-    arrivalDateStartFilter = document.getElementById("arrival-date-start-filter");
-    arrivalDateEndFilter = document.getElementById("arrival-date-end-filter");
-    arrivalTimeStartFilter = document.getElementById("arrival-time-start-filter");
-    arrivalTimeEndFilter = document.getElementById("arrival-time-end-filter");
 
     arrivalsTable = document.getElementById("arrivals");
     noDataInfo = document.getElementById("no-data-info");
@@ -37,12 +29,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     firstnameFilter.addEventListener("input", () => filterAndDisplayRows());
     lastnameFilter.addEventListener("input", () => filterAndDisplayRows());
     companyFilter.addEventListener("input", () => filterAndDisplayRows());
-    carFilter.addEventListener("input", () => filterAndDisplayRows());
-    arrivalDateStartFilter.addEventListener("input", () => filterAndDisplayRows());
-    arrivalDateEndFilter.addEventListener("input", () => filterAndDisplayRows());
-    arrivalTimeStartFilter.addEventListener("input", () => filterAndDisplayRows());
-    arrivalTimeEndFilter.addEventListener("input", () => filterAndDisplayRows());
 
+    //displayArrivals(notConfirmedArrivals);
     filterAndDisplayRows();
 });
 
@@ -55,12 +43,8 @@ function displayArrivals(arrivals) {
     for (let arrival of arrivals) {
         let row = document.createElement("tr");
 
-        row.appendChild(createTextTableField(arrival.id, true));
         row.appendChild(createTextTableField(arrival.name));
         row.appendChild(createTextTableField(arrival.company));
-        row.appendChild(createTextTableField(arrival.register_number));
-        row.appendChild(createTextTableField(arrival.arrival_timestamp));
-        row.appendChild(createTextTableField(arrival.leave_timestamp));
         row.appendChild(createTextTableField(arrival.description));
 
         let hostsTableNode = document.createElement("td");
@@ -69,32 +53,33 @@ function displayArrivals(arrivals) {
         }
         row.appendChild(hostsTableNode);
 
+        row.appendChild(createUrlTableField(arrival.id));
+
         arrivalsTableBody.appendChild(row);
     }
 }
 
+function createUrlTableField(id) {
+    let actionTableNode = document.createElement("td");
+    let actionNode = document.createElement("a");
+    actionNode.href = CONFIRM_VISIT_URL + String(id);
+    actionNode.textContent = "Potwierdź wizytę";
+    actionTableNode.appendChild(actionNode);
+    return actionTableNode;
+}
+
 function filterAndDisplayRows() {
     let filtered = filterRows(
-        historyArrivals, 
+        notConfirmedArrivals,
         [
             firstnameFilter.value,
             lastnameFilter.value,
             companyFilter.value,
-            carFilter.value,
-            arrivalDateStartFilter.value,
-            arrivalDateEndFilter.value,
-            arrivalTimeStartFilter.value,
-            arrivalTimeEndFilter.value
         ],
         [
             'firstname',
             'lastname',
             'company',
-            'register_number',
-            'date_start',
-            'date_end',
-            'time_start',
-            'time_end'
         ]
     );
     displayArrivals(filtered);

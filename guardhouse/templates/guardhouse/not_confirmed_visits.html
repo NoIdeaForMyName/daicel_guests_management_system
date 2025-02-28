@@ -1,0 +1,66 @@
+{% extends "guardhouse/master.html" %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'not_confirmed_visits.js' %}" type="module"></script>
+{% endblock %}
+
+{% block title %}
+    Niepotwierdzone wizyty
+{% endblock %}
+
+{% block header %}
+    Niepotwierdzone wizyty
+{% endblock %}
+
+{% block content %}
+
+    <div id="main-content" style="{% if not_confirmed_arrivals|length < 1 %}display:none;{% endif %}">
+        <div id="filters">
+            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
+            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
+            <input id="company-filter" type="text" placeholder="Wpisz firmę">
+        </div>
+
+        <div id="arrivals">
+            <table id="arrivals-table">
+                <thead>
+                    <tr>
+                        <th>Imię Nazwisko</th>
+                        <th>Firma</th>
+                        <th>Cel przybycia</th>
+                        <th>Osoby odpowiedzialne</th>
+                        <th>Potwierdzić wizytę?</th>
+                    </tr>
+                </thead>
+                <tbody id="arrivals-table-body">
+                    {% for arrival in not_confirmed_arrivals %}
+                        <tr>
+                            <td>{{arrival.name}}</td>
+                            <td>{{arrival.company}}</td>
+                            <td>{{arrival.description}}</td>
+                            <td>
+                                {% for host in arrival.hosts %}
+                                    <p>{{ host.name }}</p>
+                                {% endfor %}
+                            </td>
+                            <td class="confirm-arrival-button">
+                                <input name="arrival_id" type="hidden" value="{{ arrival.id }}">
+                                <a href={% url 'guardhouse-confirm-visit' arrival.id %}>Potwierdź wizytę</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="no-data-info" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
+        <h2>
+            Brak rekordów do wyświetlenia
+        </h2>
+    </div>
+
+    {{ not_confirmed_arrivals|json_script:"not_confirmed_arrivals_json" }}
+
+{% endblock %}

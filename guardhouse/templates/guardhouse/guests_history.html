@@ -15,33 +15,41 @@
 
 {% block content %}
 
-    <div id="filters">
-        <input id="firstname-filter" type="text" placeholder="Wpisz imię">
-        <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
-        <input id="company-filter" type="text" placeholder="Wpisz firmę">
-        <input id="car-filter" type="text" placeholder="Wpisz numer tablicy rejestracyjnej">
-        <input id="arrival-date-start-filter" type="date" placeholder="Podaj datę">
-        <input id="arrival-date-end-filter" type="date" placeholder="Podaj datę">
-        <input id="arrival-time-start-filter" type="time" placeholder="Podaj ">
-        <input id="arrival-time-end-filter" type="time" placeholder="Wpisz numer tablicy rejestracyjnej">
+    <div id="main-content">
+        <div id="filters">
+            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
+            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
+            <input id="company-filter" type="text" placeholder="Wpisz firmę">
+            <input id="car-filter" type="text" placeholder="Wpisz numer tablicy rejestracyjnej">
+            <input id="arrival-date-start-filter" type="date" placeholder="Podaj datę">
+            <input id="arrival-date-end-filter" type="date" placeholder="Podaj datę">
+            <input id="arrival-time-start-filter" type="time" placeholder="Podaj ">
+            <input id="arrival-time-end-filter" type="time" placeholder="Wpisz numer tablicy rejestracyjnej">
+        </div>
+
+        <div id="arrivals">
+            <table id="arrivals-table">
+                <thead>
+                    <tr>
+                        <th hidden>id</th>
+                        <th>Imię Nazwisko</th>
+                        <th>Firma</th>
+                        <th>Numer rejestracyjny</th>
+                        <th>Data przybycia</th>
+                        <th>Data opuszczenia</th>
+                        <th>Cel przybycia</th>
+                        <th>Osoby odpowiedzialne</th>
+                    </tr>
+                </thead>
+                <tbody id="arrivals-table-body"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="arrivals">
-        <table id="arrivals-table">
-            <thead>
-                <tr>
-                    <th hidden>id</th>
-                    <th>Imię Nazwisko</th>
-                    <th>Firma</th>
-                    <th>Numer rejestracyjny</th>
-                    <th>Data przybycia</th>
-                    <th>Data opuszczenia</th>
-                    <th>Cel przybycia</th>
-                    <th>Osoby odpowiedzialne</th>
-                </tr>
-            </thead>
-            <tbody id="arrivals-table-body"></tbody>
-        </table>
+    <div id="no-data-info" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
+        <h2>
+            Brak rekordów do wyświetlenia
+        </h2>
     </div>
 
     {{ archive_arrivals|json_script:"archive_arrivals_json" }}
