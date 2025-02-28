@@ -59,10 +59,11 @@ class Car(models.Model):
 
 
 class Arrival(models.Model):
+    confirmed = models.BooleanField()
     guest = models.ForeignKey(Guest, on_delete=models.RESTRICT)
-    car = models.ForeignKey(Car, on_delete=models.RESTRICT, null=True, blank=True)
     arrival_purpose = models.TextField()
-    arrival_timestamp = models.DateTimeField(auto_now_add=True)
+    car = models.ForeignKey(Car, on_delete=models.RESTRICT, null=True, blank=True)
+    arrival_timestamp = models.DateTimeField(null=True, blank=True)
     leave_timestamp = models.DateTimeField(null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.RESTRICT, null=True, blank=True)
 

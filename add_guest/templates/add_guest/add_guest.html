@@ -3,7 +3,7 @@
 
 
 {% block links %}
-    <script src="{% static 'add_guest.js' %}"></script>
+    <script src="{% static 'add_guest/add_guest.js' %}"></script>
 {% endblock %}
 
 {% block title %}
@@ -72,7 +72,16 @@
                         <th>Akcja</th>
                     </tr>
                 </thead>
-                <tbody id="host-table-body"></tbody>
+                <tbody id="host-table-body">
+                {% if not confirmed %}
+                    <tr>
+                        <td hidden>{{ author.id }}</td>
+                        <td>{{ author.firstname }}</td>
+                        <td>{{ author.lastname }}</td>
+                        <td><button onclick="this.parentNode.parentNode.remove()">-</button></td>
+                    </tr>
+                {% endif %}
+                </tbody>
             </table>
         </div>
 
@@ -80,6 +89,9 @@
 
     </div>
 
+    {{ process_url|json_script:"process_url_json" }}
+    {{ author|json_script:"author_json" }}
+    {{ confirmed|json_script:"confirmed_json" }}
     {{ hosts_data|json_script:"hosts_data_json" }}
     {{ companies_data|json_script:"companies_data_json" }}
     {{ registered_guests_data|json_script:"registered_guests_data_json" }}

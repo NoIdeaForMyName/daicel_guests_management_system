@@ -73,10 +73,11 @@ class HostNewGuestsService:
 
         for guest_m in guests_m:
             arrival_m = Arrival(
+                confirmed = True,
                 guest = guest_m,
-                car = car_m,
                 arrival_purpose = description,
-                #arrival_timestamp = datetime.now(),
+                car = car_m,
+                arrival_timestamp = datetime.now(),
                 company = company_m
             )
             arrival_m.save()

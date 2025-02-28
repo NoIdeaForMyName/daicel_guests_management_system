@@ -15,32 +15,6 @@ def home(request):
     template = loader.get_template('guardhouse/home.html')
     return HttpResponse(template.render())
 
-@validate_ip
-def add_guest(request):
-    template = loader.get_template('guardhouse/add_guest.html')
-    hosts, success = hosts_API.get_all_hosts_data_dict()
-    if not success:
-        return hosts # TODO
-    companies = list(Company.objects.all().values())
-    guests = list(Guest.objects.all().values())
-    return HttpResponse(template.render({
-        "companies_data": companies,
-        "registered_guests_data": guests,
-        "hosts_data": hosts['message']
-        }, request))
-
-@validate_ip
-def add_guest_process(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        response, success = HostNewGuestsService.add_new_arrival_data(data)
-        if success:
-            return JsonResponse({"message": "Arrival added succesfully"}, status=200)
-        else:
-            return JsonResponse({"error": response}, status=400)
-        #return JsonResponse({"message": "Guest added", "received": data})
-    return JsonResponse({"error": "Incorrect method"}, status=400)
-
 
 @validate_ip
 def active_guests(request):

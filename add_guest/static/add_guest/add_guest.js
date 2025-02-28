@@ -1,3 +1,8 @@
+
+let process_url;
+
+let author_json;
+let confirmed_json;
 let hosts_data_json;
 let companies_data_json;
 let registered_guests_data_json;
@@ -12,6 +17,10 @@ const MAX_REGISTER_NB_LEN = 8;
 
 document.addEventListener("DOMContentLoaded", (event) => {
 
+    process_url = JSON.parse(document.getElementById('process_url_json').textContent);
+
+    author_json = JSON.parse(document.getElementById('author_json').textContent);
+    confirmed_json = JSON.parse(document.getElementById('confirmed_json').textContent);
     hosts_data_json = JSON.parse(document.getElementById('hosts_data_json').textContent);
     companies_data_json = JSON.parse(document.getElementById('companies_data_json').textContent);
     registered_guests_data_json = JSON.parse(document.getElementById('registered_guests_data_json').textContent);
@@ -33,7 +42,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 function getDataFromTable(tableBody) {
     let values = [];
-    for (let row of tableBody.childNodes) {
+    for (let row of tableBody.children) {
         value = []
         for (let el of Array.from(row.childNodes).slice(0, -1)) {
             value.push(el.textContent);
@@ -71,8 +80,11 @@ async function postGuestData() {
         return;
     }
 
-    if (confirm(`Czy napewno chcesz dodać gościa?\nCzas przybycia: ${new Date()}`)) {
+    const confirmMsg = `Czy napewno chcesz dodać gościa?${confirmed_json ? `\nCzas przybycia: ${new Date()}` : ""}`
+    if (confirm(confirmMsg)) {
         sendFormToServer({
+            //'author': author_json,
+            'confirmed': confirmed_json,
             'company': companyValue,
             'register_number': registerNbValue,
             'description': descriptionValue,
@@ -91,23 +103,24 @@ async function postGuestData() {
 }
 
 function sendFormToServer(json) {
-        return fetch('/guardhouse/add-guest-process', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            body: JSON.stringify(json)
-        })
-        .then(response => {
-            return response.json()
-            .then(data => {
-                if (!response.ok) {
-                    throw new Error(JSON.stringify(data));
-                }
-                return data;
-            });
+    console.log("FORM:", json);
+    return fetch(process_url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(json)
+    })
+    .then(response => {
+        return response.json()
+        .then(data => {
+            if (!response.ok) {
+                throw new Error(JSON.stringify(data));
+            }
+            return data;
         });
+    });
 }
 
 function getCookie(name) {
