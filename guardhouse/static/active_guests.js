@@ -1,7 +1,6 @@
 import { createTextTableField, filterRows } from './guests_service.js';
 
 let activeArrivals;
-//let filteredArrivals;
 
 let firstnameFilter;
 let lastnameFilter;
@@ -12,7 +11,6 @@ let arrivalsTableBody;
 
 document.addEventListener("DOMContentLoaded", (event) => {
     activeArrivals = JSON.parse(document.getElementById('active_arrivals_json').textContent);
-    //filteredArrivals = activeArrivals;
 
     arrivalsTableBody = document.getElementById("arrivals-table-body");
 
@@ -44,18 +42,6 @@ function displayArrivals(arrivals) {
         row.appendChild(createTextTableField(arrival.register_number));
         row.appendChild(createTextTableField(arrival.arrival_timestamp));
         row.appendChild(createTextTableField(arrival.description));
-        
-        let long_text_container = document.createElement("div");
-        long_text_container.classList.add("long-text");
-        for (let i=0; i < arrival.meetings.length; i++) {
-            let meeting = arrival.meetings[i];
-            let p = document.createElement("p");
-            p.innerHTML = `<b>Spotkanie ${i+1}:</b> ${meeting.description}`;
-            long_text_container.appendChild(p);
-        }
-        let meetingsTableNode = document.createElement("td");
-        meetingsTableNode.appendChild(long_text_container);
-        row.appendChild(meetingsTableNode);
 
         let hostsTableNode = document.createElement("td");
         for (let host of arrival.hosts) {

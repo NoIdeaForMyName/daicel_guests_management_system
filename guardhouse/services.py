@@ -7,15 +7,6 @@ from django.forms.models import model_to_dict
 from django.db.models import Q
 
 
-'''
-1. pobierz dane wszystkich osob odpowiedzialnych DONE
-2. pobierz dane wszystkich aktywnych spotkan DONE
-3. pobierz dane wszystkich firm
-4. pobierz dane wszystkich zarejestrowanych (rowniez historycznie) gości
-
-'''
-
-
 class HostNewGuestsService:
 
     @staticmethod
@@ -29,12 +20,10 @@ class HostNewGuestsService:
         guests = data['guests']
         description = data['description']
         hosts = data['hosts']
-        meetings = data['meetings']
 
         company_m = None
         car_m = None
         guests_m = []
-        meetings_m = []
         arrivals_m = []
         hosts_m_API = []
 
@@ -45,7 +34,7 @@ class HostNewGuestsService:
 
         if company_name:
             company_m = Company.objects.filter(name=company_name).first()
-            if company_m == None:
+            if company_m is None:
                 company_m = Company(name=company_name)
                 company_m.save()
         
@@ -54,7 +43,7 @@ class HostNewGuestsService:
                 transaction.set_rollback(True)
                 return {'error': f"Incorrect register number {register_nb}"}, False
             car_m = Car.objects.filter(register_number=register_nb).first()
-            if car_m == None:
+            if car_m is None:
                 car_m = Car(register_number=register_nb)
                 car_m.save()
         
@@ -72,14 +61,6 @@ class HostNewGuestsService:
                 )
             guest_m.save()
             guests_m.append(guest_m)
-            
-        # 'meetings': [{'id': '2', 'start_time': '08:31', 'end_time': '15:00', 'date': '02/19/2025', 'description': 'Vivamus malesuada elementum, maecenas molestie ...'}]
-        for meeting in meetings:
-            meeting_m = Meeting.objects.filter(id=meeting['id']).first()
-            if meeting_m == None:
-                transaction.set_rollback(True)
-                return {'error': f"Provided meeting: {meeting} is incorrect"}, False
-            meetings_m.append(meeting_m)
 
         for host_API in hosts:
             #host_m_API = [host for host in all_hosts if (host.id, host.firstname, host.lastname) == (host_API['id'], host_API['firstname'], host_API['lastname'])]
@@ -108,41 +89,9 @@ class HostNewGuestsService:
                 )
                 responsibility_m.save()
 
-            for meeting_m in meetings_m:
-                arrival_m.meetings.add(meeting_m)
-                # participation_m = Participation(
-                #     arrival = arrival_m,
-                #     meeting = meeting_m
-                # )
-                # participation_m.save()
             arrival_m.save()
 
         return {'message': f"Arrivals added succesfully: {data}"}, True
-
-
-class MeetingService:
-    @classmethod
-    def get_active_meetings_full_data(from_today=True):
-        meetings = Meeting.objects.get_active(from_today)
-        def meeting_to_dict(meeting):
-            hosts_set = set(map(lambda leadership: leadership.host, Leadership.objects.filter(meeting=meeting)))
-            full_hosts, success = hosts_API.get_all_hosts_data()
-            if not success:
-                return full_hosts, success
-            full_hosts_filtered = list(filter(lambda h: h.id in hosts_set, full_hosts['message']))
-            meeting_date = meeting.start_timestamp.date()
-            start_time = meeting.start_timestamp.time()
-            end_time = meeting.end_timestamp.time()
-            return {
-                'id': meeting.id,
-                'leaders': [host.to_dict for host in full_hosts_filtered],
-                'date': meeting_date.strftime(DATE_FORMAT),
-                'start_time': start_time.strftime(TIME_FORMAT),
-                'end_time': end_time.strftime(TIME_FORMAT),
-                'description': meeting.description
-            }
-        meetings_full = list(map(meeting_to_dict, meetings))
-        return {"message": meetings_full}, True
 
 
 class ActiveGuestsService:
@@ -152,7 +101,6 @@ class ActiveGuestsService:
             .select_related('guest')
             .select_related('car')
             .select_related('company')
-            .prefetch_related('meetings')
             .prefetch_related('responsibility_set')
             .all()
         )
@@ -163,7 +111,7 @@ class ActiveGuestsService:
     def active_guests_count(self) -> int:
         return self.active_arrivals.all().count()
 
-    def active_arrivals_context(self) -> dict:
+    def active_arrivals_context(self) -> tuple[dict, bool]:
         full_hosts, success = hosts_API.get_all_hosts_data()
         if not success:
             return full_hosts, success
@@ -177,12 +125,6 @@ class ActiveGuestsService:
                     'register_number': arrival.car.register_number if arrival.car else None,
                     'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
                     'description': arrival.arrival_purpose,
-                    'meetings': [
-                        {
-                            'description': meeting.description
-                        }
-                        for meeting in arrival.meetings.all()
-                    ],
                     'hosts': [
                         {
                             'name': f'{host.firstname} {host.lastname}'
@@ -208,7 +150,6 @@ class GuestsHistoryService:
             .select_related('guest')
             .select_related('car')
             .select_related('company')
-            .prefetch_related('meetings')
             .prefetch_related('responsibility_set')
             .all()
         )
@@ -228,12 +169,6 @@ class GuestsHistoryService:
                     'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
                     'leave_timestamp': arrival.leave_timestamp.strftime(DATETIME_FORMAT),
                     'description': arrival.arrival_purpose,
-                    'meetings': [
-                        {
-                            'description': meeting.description
-                        }
-                        for meeting in arrival.meetings.all()
-                    ],
                     'hosts': [
                         {
                             'name': f'{host.firstname} {host.lastname}'

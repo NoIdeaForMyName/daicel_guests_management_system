@@ -7,7 +7,8 @@ let registerNumberInput;
 let descriptionInput;
 let guestTableInput;
 let hostTableInput;
-let meetingTableInput;
+
+const MAX_REGISTER_NB_LEN = 8;
 
 document.addEventListener("DOMContentLoaded", (event) => {
 
@@ -20,12 +21,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     descriptionInput = document.getElementById("arrival-purpose");
     guestTableInput = document.getElementById("guest-table-body");
     hostTableInput = document.getElementById("host-table-body");
-    meetingTableInput = document.getElementById("meeting-table-body");
-
-    const meetingDetailsList = document.getElementsByClassName("meeting-detail");
-    Array.from(meetingDetailsList).forEach(element => {
-        element.addEventListener("click", () => addMeeting(element));
-    });
 
     companyNameInput.addEventListener("blur", () => {
         const companyName = companyNameInput.value;
@@ -48,23 +43,12 @@ function getDataFromTable(tableBody) {
     return values;
 }
 
-function getGuestsData() {
-    
-}
-
 async function postGuestData() {
     let companyValue = companyNameInput.value;
     let registerNbValue = registerNumberInput.value;
     let descriptionValue = descriptionInput.value;
     let guestsValues = getDataFromTable(guestTableInput);
     let hostsValues = getDataFromTable(hostTableInput);
-    let meetingsValues = getDataFromTable(meetingTableInput);
-
-    // if (!validateCompany(companyValue)) {
-    //     alert("Nieprawidłowa nazwa firmy!");
-    //     companyNameInput.textContent = "";
-    //     return;
-    // }
 
     if (!validateRegisterNb(registerNbValue)) {
         alert("Nieprawidłowy numer tablicy rejestracyjnej!");
@@ -87,11 +71,6 @@ async function postGuestData() {
         return;
     }
 
-    // if (meetingsCollide(meetingsValues)) {
-    //     alert("Wybrane spotkania kolidują ze sobą!");
-    //     return;
-    // }
-
     if (confirm(`Czy napewno chcesz dodać gościa?\nCzas przybycia: ${new Date()}`)) {
         sendFormToServer({
             'company': companyValue,
@@ -99,7 +78,6 @@ async function postGuestData() {
             'description': descriptionValue,
             'guests': guestsValues.map(guest => ({'id': Number(guest[0]), 'firstname': guest[1], 'lastname': guest[2]})),
             'hosts': hostsValues.map(host => ({'id': Number(host[0]), 'firstname': host[1], 'lastname': host[2]})),
-            'meetings': meetingsValues.map(meeting => ({'id': Number(meeting[0]), 'start_time': meeting[2], 'end_time': meeting[3], 'date': meeting[1], 'description': meeting[4]}))
         })
         .then(response => {
             clearForm();
@@ -109,23 +87,6 @@ async function postGuestData() {
         .catch(error => {
             alert(`Error: ${error}`)}
         );
-    }
-}
-
-function meetingsCollide(meetings) {
-    for (let meeting of meetings) {
-        let date = meeting[1];
-        let start_time = meeting[2];
-        let end_time = meeting[3];
-        for (let compared_meeting of meetings) {
-            if (meeting === compared_meeting) {
-                continue;
-            }
-            let date_ = compared_meeting[1];
-            let start_time_ = compared_meeting[2];
-            let end_time_ = compared_meeting[3];
-            return (date === date_ && ((start_time_ >= start_time && start_time_ <= end_time) || (start_time >= start_time_ && start_time <= end_time_)));
-        }
     }
 }
 
@@ -170,8 +131,7 @@ function validateCompany(name) {
 }
 
 function validateRegisterNb(registerNb) {
-    // TODO
-    return true;
+    return registerNb.length <= MAX_REGISTER_NB_LEN;
 }
 
 // function getAllFields() {
@@ -186,44 +146,11 @@ function clearForm() {
     descriptionInput.value = '';
     guestTableInput.innerHTML = ''
     hostTableInput.innerHTML = ''
-    meetingTableInput.innerHTML = ''
 }
 
 function scrollTop() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
-}
- 
-function addMeeting(meeting_data) {
-    const MAX_MEETING_DESCRIPTION_LENGTH = 50
-
-    let id = meeting_data.children[0].textContent;
-    let date = meeting_data.children[2].textContent;
-    let start_time = meeting_data.children[3].textContent;
-    let end_time = meeting_data.children[4].textContent;
-    let description = meeting_data.children[5].textContent.substring(0, MAX_MEETING_DESCRIPTION_LENGTH-3) + "...";
-
-    //shortened_meeting_data = meeting_data.substring(0, MAX_MEETING_DATA_LENGTH-3) + '...'
-    
-    const newMeetingRow = document.createElement("tr");
-    //newMeetingRow.appendChild(createTextTableField(shortened_meeting_data));   
-
-    newMeetingRow.appendChild(createTextTableField(id, display='none'));   
-    newMeetingRow.appendChild(createTextTableField(date));   
-    newMeetingRow.appendChild(createTextTableField(start_time));   
-    newMeetingRow.appendChild(createTextTableField(end_time));   
-    newMeetingRow.appendChild(createTextTableField(description));   
-    newMeetingRow.appendChild(createCheckboxTableField());
-
-    let meetingTableBody = document.getElementById("meeting-table-body");
-    meetingTableBody.appendChild(newMeetingRow);
-
-    if (meetingsCollide(getDataFromTable(meetingTableInput))) {
-        alert("Wybrane spotkania kolidują ze sobą! Wybrane spotkanie nie zostanie dodane");
-        meetingTableBody.removeChild(newMeetingRow);
-    }
-
-    document.getElementById("meeting-details-modal").style.display='none';
 }
 
 function addHost() {

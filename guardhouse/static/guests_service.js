@@ -50,6 +50,7 @@ export function filterRows(allArrivals, values, columns) {
             }
             if (!columnValue) {
                 fulfills = false;
+                continue;
             }
             switch (column) {
                 case 'date_start':

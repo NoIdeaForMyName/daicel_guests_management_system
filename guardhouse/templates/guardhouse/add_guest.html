@@ -76,62 +76,9 @@
             </table>
         </div>
 
-        <div id="meetings-form">
-            <button id="meeting-details-button" onclick="document.getElementById('meeting-details-modal').style.display='block'">Dodaj spotkanie</button>
-            <div id="meeting-details-modal" class="details-modal">
-                <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('meeting-details-modal').style.display='none'">&times;</span>
-                    <h2>Dostępne spotkania</h2>
-                    <table>
-                    <thead>
-                        <tr>
-                            <th style="display: none"></th>
-                            <th>Przewodniczący</th>
-                            <th>Data</th>
-                            <th>Czas rozpoczęcia</th>
-                            <th>Czas zakończenia</th>
-                            <th>Opis</th>
-                        </tr>
-                    </thead>
-                    <tbody id="add-meeting-table-body">
-                        {% for meeting in meetings_data %}
-                            <tr class="meeting-detail">
-                                <td style="display: none;">{{meeting.id}}</td>
-                                <td>{% for leader in meeting.leaders %}{{ leader.firstname }} {{ leader.lastname }}, {% endfor %}</td>
-                                <td>{{meeting.date}}</td>
-                                <td>{{meeting.start_time}}</td>
-                                <td>{{meeting.end_time}}</td>
-                                <td>{{meeting.description}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                    </table>
-
-                </div>
-            </div>
-            <table id="meetings-table">
-                <thead>
-                    <tr>
-                        <th style="display: none"></th>
-                        <th>Data</th>
-                        <th>Czas rozpoczęcia</th>
-                        <th>Czas zakończenia</th>
-                        <th>Opis</th>
-                        <th>Akcja</th>
-                    </tr>
-                </thead>
-                <tbody id="meeting-table-body"></tbody>
-            </table>
-        </div>
-
         <input type="submit" value="Akceptuj" onclick="postGuestData()">
 
     </div>
-
-    <h1>TEST PART</h1>
-    {% for guest in registered_guests_data %}
-    <p>{{guest}}</p>
-    {% endfor %}
 
     {{ hosts_data|json_script:"hosts_data_json" }}
     {{ companies_data|json_script:"companies_data_json" }}

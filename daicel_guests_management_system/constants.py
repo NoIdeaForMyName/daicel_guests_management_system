@@ -1,3 +1,7 @@
 DATETIME_FORMAT = "%m/%d/%Y, %H:%M"
 DATE_FORMAT = "%m/%d/%Y"
 TIME_FORMAT = "%H:%M"
+
+MAX_REGISTER_NB_LEN = 8
+
+FORMS_DATETIME_FORMAT = "%d/%m/%Y %H:%M"

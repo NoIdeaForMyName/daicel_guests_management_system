@@ -3,8 +3,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template import loader
 from database_models.models import *
 from guardhouse.forms import *
-from guardhouse.services import HostNewGuestsService, MeetingService, ActiveGuestsService, GuestsHistoryService
-from database_models.models import Company, Guest, Car, Meeting, Arrival, Leadership, Responsibility
+from guardhouse.services import HostNewGuestsService, ActiveGuestsService, GuestsHistoryService
+from database_models.models import Company, Guest, Car, Arrival, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
 from .security import validate_ip
@@ -21,17 +21,12 @@ def add_guest(request):
     hosts, success = hosts_API.get_all_hosts_data_dict()
     if not success:
         return hosts # TODO
-    meetings, success = MeetingService.get_active_meetings_full_data()
-    #print("test meeting:", meetings)
-    if not success:
-        return meetings # TODO
     companies = list(Company.objects.all().values())
     guests = list(Guest.objects.all().values())
     return HttpResponse(template.render({
         "companies_data": companies,
         "registered_guests_data": guests,
-        "hosts_data": hosts['message'],
-        "meetings_data": meetings['message']
+        "hosts_data": hosts['message']
         }, request))
 
 @validate_ip

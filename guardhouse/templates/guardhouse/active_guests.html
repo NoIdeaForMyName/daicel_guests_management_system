@@ -47,7 +47,6 @@
                         <th>Numer rejestracyjny</th>
                         <th>Data przybycia</th>
                         <th>Cel przybycia</th>
-                        <th>Uczestnictwo w spotkaniach</th>
                         <th>Osoby odpowiedzialne</th>
                         <th>Zakończyć wizytę?</th>
                     </tr>
@@ -60,13 +59,6 @@
                             <td>{{arrival.register_number}}</td>
                             <td>{{arrival.arrival_timestamp}}</td>
                             <td>{{arrival.description}}</td>
-                            <td>
-                                <div class="long-text">
-                                    {% for meeting in arrival.meetings %}
-                                        <p><b>Spotkanie {{ forloop.counter }}:</b> {{ meeting.description }}</p>
-                                    {% endfor %}
-                                </div>
-                            </td>
                             <td>
                                 {% for host in arrival.hosts %}
                                     <p>{{ host.name }}</p>
