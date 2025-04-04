@@ -4,7 +4,7 @@ from database_models.models import *
 from hosts_API.functionalities import *
 from .services import *
 
-def add_guest(request, confirmed, process_url):
+def add_guest(request, src):
     template = loader.get_template('add_guest/add_guest.html')
     hosts, success = hosts_API.get_all_hosts_data_dict()
     if not success:
@@ -13,11 +13,20 @@ def add_guest(request, confirmed, process_url):
     companies = list(Company.objects.all().values())
     guests = list(Guest.objects.all().values())
     author = None
-    for host in hosts:
-        if host['id'] == request.user.id:
-            author = host
-            break
+    if src == "host": # host site
+        base_template = 'host/master.html'
+        process_url = '/host/add-guest-process'
+        confirmed = False
+        for host in hosts:
+            if host['id'] == request.user.id:
+                author = host
+                break
+    else:
+        base_template = 'guardhouse/master.html'
+        process_url = '/guardhouse/add-guest-process'
+        confirmed = True
     return HttpResponse(template.render({
+        "base_template": base_template,
         "process_url": process_url,
         "author": author,
         "confirmed": confirmed,
