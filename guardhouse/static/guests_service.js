@@ -9,6 +9,16 @@ export function createTextTableField(text, hidden=false) {
     return tableNode;
 }
 
+export function createCheckboxTableField(id) {
+    let actionTableNode = document.createElement("td");
+    let actionNode = document.createElement("input");
+    actionNode.type = "checkbox";
+    actionNode.name = "check[]";
+    actionNode.value = id;
+    actionTableNode.appendChild(actionNode);
+    return actionTableNode;
+}
+
 export function filterRows(allArrivals, values, columns) {
     let filteredArrivals = [];
 

@@ -11,6 +11,7 @@ import json
 from .security import validate_ip
 
 
+
 @validate_ip
 def home(request):
     template = loader.get_template('guardhouse/home.html')
@@ -23,13 +24,13 @@ def active_guests(request):
 
     if request.method == "POST":
         print("POST: ", request.POST)
-        arrival_ids = request.POST.getlist('end-visit[]')
+        arrival_ids = request.POST.getlist('check[]')
         try:
             arrival_ids = [int(i) for i in arrival_ids]
         except:
             return HttpResponseBadRequest("Wrong request body - id should be a number")
         active_guests_service.end_arrivals(arrival_ids)
-        return redirect("active-guests")
+        return redirect("guardhouse-active-guests")
 
     template = loader.get_template('guardhouse/active_guests.html')
 
@@ -66,8 +67,20 @@ def guests_history(request):
 
 @validate_ip
 def not_confirmed_visits(request):
-    template = loader.get_template('guardhouse/not_confirmed_visits.html')
     not_confirmed_arrivals_service = NotConfirmedArrivalsService()
+    if request.method == "POST":
+        arrival_ids = request.POST.getlist('check[]')
+        try:
+            arrival_ids = [int(i) for i in arrival_ids]
+        except:
+            return HttpResponseBadRequest("Wrong request body - id should be a number")
+        register_nb = request.POST.get('register_nb')
+        register_nb = register_nb if register_nb != '' else None
+        message, success = not_confirmed_arrivals_service.confirm_arrivals(arrival_ids, register_nb)
+        if not success:
+            return message, success
+        return redirect("guardhouse-not-confirmed-visits")
+    template = loader.get_template('guardhouse/not_confirmed_visits.html')
     message, success = not_confirmed_arrivals_service.not_confirmed_arrivals_context()
     if not success:
         return message, success
@@ -77,10 +90,13 @@ def not_confirmed_visits(request):
     }, request))
 
 
-@validate_ip
-def confirm_visit(request, arrival_id):
-    template = loader.get_template('guardhouse/confirm_visit.html')
-    print("ARRIVAL ID TO CONFIRM:", arrival_id)
-    return HttpResponse(template.render({
-
-    }, request))
+# @validate_ip
+# def confirm_visit(request, arrival_id):
+#     template = loader.get_template('guardhouse/not_confirmed_visits.html')
+#     confirm_service = ConfirmArrivalsService()
+#     message, success = confirm_service.confirm_arrival(arrival_id)
+#     if not success:
+#         return message, success
+#     return HttpResponse(template.render({
+#
+#     }, request))

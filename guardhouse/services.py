@@ -5,6 +5,8 @@ from daicel_guests_management_system.constants import *
 from django.db import transaction
 from django.forms.models import model_to_dict
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 class ActiveGuestsService:
@@ -132,3 +134,24 @@ class NotConfirmedArrivalsService:
                 for arrival in self.not_confirmed_arrivals
             ]
         }, True
+
+    def confirm_arrivals(self, arrival_ids, register_nb):
+        arrivals_m = Arrival.objects.filter(id__in=arrival_ids)
+        for a in arrivals_m:
+            if a.confirmed:
+                return {'error': f'Arrival with id: {a.id} is already confirmed'}, False
+        car = None
+        if register_nb:
+            try:
+                car = Car.objects.get(register_number=register_nb)
+            except ObjectDoesNotExist:
+                car = Car(register_number=register_nb)
+                car.save()
+        for arrival in arrivals_m:
+            if not arrival.confirmed:
+                arrival.arrival_timestamp = datetime.now()
+                arrival.confirmed = True
+                arrival.car = car
+                arrival.save()
+        return {'message': f'Arrivals confirmed successfully'}, True
+

@@ -1,4 +1,4 @@
-import { createTextTableField, filterRows } from './guests_service.js';
+import { createTextTableField, filterRows, createCheckboxTableField } from './guests_service.js';
 
 let activeArrivals;
 
@@ -64,16 +64,6 @@ function displayArrivals(arrivals) {
     }
 }
 
-function createCheckboxTableField(id) {
-    let actionTableNode = document.createElement("td");
-    let actionNode = document.createElement("input");
-    actionNode.type = "checkbox";
-    actionNode.name = "end-visit[]";
-    actionNode.value = id;
-    actionTableNode.appendChild(actionNode);
-    return actionTableNode;
-}
-
 function filterAndDisplayRows() {
     let filtered = filterRows(
         activeArrivals, 
@@ -95,7 +85,7 @@ function filterAndDisplayRows() {
 
 export function endVisitsConfirmationPopup() {
     let counter = 0;
-    document.getElementsByName("end-visit[]").forEach(el => {
+    document.getElementsByName("check[]").forEach(el => {
         if (el.checked) {
             counter++;
         }

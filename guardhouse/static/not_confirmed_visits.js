@@ -1,6 +1,10 @@
-import { createTextTableField, filterRows } from './guests_service.js';
+import {createCheckboxTableField, createTextTableField, filterRows} from './guests_service.js';
 
 let notConfirmedArrivals;
+
+let endFormPopup;
+let showPopupButton;
+let closePopupButton;
 
 let firstnameFilter;
 let lastnameFilter;
@@ -11,10 +15,18 @@ let arrivalsTableBody;
 let arrivalsTable;
 let noDataInfo;
 
-const CONFIRM_VISIT_URL = "confirm-visit/";
-
 document.addEventListener("DOMContentLoaded", (event) => {
     notConfirmedArrivals = JSON.parse(document.getElementById('not_confirmed_arrivals_json').textContent);
+
+    endFormPopup = document.getElementById("end-form-popup");
+    showPopupButton = document.getElementById("show-end-popup-button");
+    closePopupButton = document.getElementById("close-end-popup-button");
+    showPopupButton.addEventListener('click', () => {
+        endFormPopup.style.display = "block";
+    });
+    closePopupButton.addEventListener('click', () => {
+        endFormPopup.style.display = "none";
+    });
 
     arrivalsTableBody = document.getElementById("arrivals-table-body");
 
@@ -32,6 +44,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     //displayArrivals(notConfirmedArrivals);
     filterAndDisplayRows();
+
+    window.confirmVisitsConfirmationPopup = confirmVisitsConfirmationPopup;
 });
 
 function displayArrivals(arrivals) {
@@ -53,19 +67,10 @@ function displayArrivals(arrivals) {
         }
         row.appendChild(hostsTableNode);
 
-        row.appendChild(createUrlTableField(arrival.id));
+        row.appendChild(createCheckboxTableField(arrival.id));
 
         arrivalsTableBody.appendChild(row);
     }
-}
-
-function createUrlTableField(id) {
-    let actionTableNode = document.createElement("td");
-    let actionNode = document.createElement("a");
-    actionNode.href = CONFIRM_VISIT_URL + String(id);
-    actionNode.textContent = "Potwierdź wizytę";
-    actionTableNode.appendChild(actionNode);
-    return actionTableNode;
 }
 
 function filterAndDisplayRows() {
@@ -83,4 +88,27 @@ function filterAndDisplayRows() {
         ]
     );
     displayArrivals(filtered);
+}
+
+function confirmVisitsConfirmationPopup() {
+    let counter = 0;
+    document.getElementsByName("check[]").forEach(el => {
+        if (el.checked) {
+            counter++;
+        }
+    });
+
+    if (counter === 0) {
+        alert("Nie wybrano żadnej wizyty!");
+        endFormPopup.style.display = 'none';
+        return false;
+    }
+
+    if (confirm(`Czy na pewno chcesz potwierdzić wybrane wizyty? Liczba wybranych wizyt: ${counter}`)) {
+        return true;
+    }
+    else {
+        endFormPopup.style.display = 'none';
+        return false;
+    }
 }

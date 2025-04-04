@@ -29,6 +29,15 @@ input, textarea, select {
     font-size: 16px;
 }
 
+.main-button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
 button {
     background-color: #28a745;
     color: white;
@@ -38,6 +47,10 @@ button {
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
+}
+
+button .cancel {
+    background-color: red;
 }
 
 button:hover {
@@ -59,6 +72,20 @@ table, th, td {
 th {
     background-color: #007bff;
     color: white;
+}
+
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
 /* The Modal (background) */
