@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template import loader
 from database_models.models import *
@@ -44,3 +44,35 @@ def home(request):
 def my_guests(request):
     template = loader.get_template('host/my_guests.html')
     return HttpResponse(template.render())
+
+def not_confirmed_guests(request):
+    service = HostNotConfirmedGuestsService(request.user.id)
+    guests_data, success = service.get_not_confirmed_guests()
+    if not success:
+        return guests_data, success
+    guests_data = guests_data['message']
+    return render(request, 'host/not_confirmed_guests.html', {
+        'not_confirmed_guests': guests_data
+    })
+
+@login_required(login_url="/host/login/")
+def active_guests(request):
+    service = HostActiveGuestsService(request.user.id)
+    guests_data, success = service.get_active_guests()
+    if not success:
+        return guests_data, success
+    guests_data = guests_data['message']
+    return render(request, 'host/active_guests.html', {
+        'active_guests': guests_data
+    })
+
+@login_required(login_url="/host/login/")
+def guests_history(request):
+    service = HostGuestsHistoryService(request.user.id)
+    history_data, success = service.get_guests_history()
+    if not success:
+        return history_data, success
+    history_data = history_data['message']
+    return render(request, 'host/guests_history.html', {
+        'guests_history': history_data
+    })

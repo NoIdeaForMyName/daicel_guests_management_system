@@ -1,0 +1,47 @@
+{% extends "host/master.html" %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'host_not_confirmed_guests.js' %}" type="module"></script>
+{% endblock %}
+
+{% block title %}
+    Niezatwierdzeni goście
+{% endblock %}
+
+{% block header %}
+    Niezatwierdzeni goście
+{% endblock %}
+
+{% block content %}
+
+    <div id="main-content">
+        <div id="filters">
+            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
+            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
+            <input id="company-filter" type="text" placeholder="Wpisz firmę">
+        </div>
+
+        <div id="guests">
+            <table id="guests-table">
+                <thead>
+                    <tr>
+                        <th>Imię Nazwisko</th>
+                        <th>Firma</th>
+                        <th>Cel wizyty</th>
+                        <th>Osoby odpowiedzialne</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody id="guests-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="no-data-info" style="display:none;">
+        <h2>Brak rekordów do wyświetlenia</h2>
+    </div>
+
+    {{ not_confirmed_guests|json_script:"not_confirmed_guests_json" }}
+
+{% endblock %}

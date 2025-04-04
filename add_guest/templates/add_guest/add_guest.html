@@ -75,7 +75,7 @@
                 <tbody id="host-table-body">
                 {% if not confirmed %}
                     <tr>
-                        <td hidden>{{ author.id }}</td>
+                        <td style="display: none;">{{ author.id }}</td>
                         <td>{{ author.firstname }}</td>
                         <td>{{ author.lastname }}</td>
                         <td><button onclick="this.parentNode.parentNode.remove()">-</button></td>

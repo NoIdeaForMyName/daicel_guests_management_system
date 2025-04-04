@@ -44,7 +44,7 @@ function getDataFromTable(tableBody) {
     let values = [];
     for (let row of tableBody.children) {
         value = []
-        for (let el of Array.from(row.childNodes).slice(0, -1)) {
+        for (let el of Array.from(row.children).slice(0, -1)) {
             value.push(el.textContent);
         }
         values.push(value);

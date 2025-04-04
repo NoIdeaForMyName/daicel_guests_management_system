@@ -1,0 +1,54 @@
+{% extends "host/master.html" %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'host_guests_history.js' %}" type="module"></script>
+{% endblock %}
+
+{% block title %}
+    Historia gości
+{% endblock %}
+
+{% block header %}
+    Historia gości
+{% endblock %}
+
+{% block content %}
+
+    <div id="main-content">
+        <div id="filters">
+            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
+            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
+            <input id="company-filter" type="text" placeholder="Wpisz firmę">
+            <input id="car-filter" type="text" placeholder="Wpisz numer rejestracyjny">
+            <input id="date-start-filter" type="date">
+            <input id="date-end-filter" type="date">
+            <input id="time-start-filter" type="time">
+            <input id="time-end-filter" type="time">
+        </div>
+
+        <div id="history">
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Imię Nazwisko</th>
+                        <th>Firma</th>
+                        <th>Numer rejestracyjny</th>
+                        <th>Data przybycia</th>
+                        <th>Data wyjścia</th>
+                        <th>Cel wizyty</th>
+                        <th>Osoby odpowiedzialne</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="no-data-info" style="display:none;">
+        <h2>Brak rekordów do wyświetlenia</h2>
+    </div>
+
+    {{ guests_history|json_script:"guests_history_json" }}
+
+{% endblock %}

@@ -17,6 +17,7 @@ def add_new_arrival_data(data):
     guests = data['guests']
     description = data['description']
     hosts = data['hosts']
+    print('hosts:', hosts)
 
     company_m = None
     car_m = None
