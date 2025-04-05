@@ -15,6 +15,7 @@ urlpatterns = [
     path('not-confirmed-guests', views.not_confirmed_guests, name='host-not-confirmed-guests'),
     path('active-guests', views.active_guests, name='host-active-guests'),
     path('guests-history', views.guests_history, name='host-guests-history'),
+    path('edit_guest/<int:arrival_id>/', views.edit_guest, name='host-edit-guest'),
 
     path('login/', views.login_host, name='login'),
 ]

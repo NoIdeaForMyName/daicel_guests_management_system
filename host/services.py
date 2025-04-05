@@ -1,4 +1,7 @@
 from datetime import datetime
+from django.db import transaction
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from daicel_guests_management_system.constants import DATETIME_FORMAT
 from database_models.models import *
@@ -49,6 +52,57 @@ class HostNotConfirmedGuestsService:
             })
 
         return {'message': result}, True
+
+    @transaction.atomic
+    def update_arrival(self, data):
+        # {'arrival_id': '50', 'confirmed': False, 'company': 'Electrolux', 'register_number': '', 'description': 'spotkanie testowe', 'hosts': [{'id': 3, 'firstname': 'Tadeusz', 'lastname': 'Nowak'}, {'id': 4, 'firstname': 'Mariusz', 'lastname': 'Wiśniewski'}]}
+        try:
+            arrival_m = self.not_confirmed_guests.get(arrival__id=data['arrival_id']).arrival
+            #arrival_m = Arrival.objects.filter(confirmed=False).get(data['arrival_id'])
+        except ObjectDoesNotExist:
+            transaction.set_rollback(True)
+            return {'error': f'Arrival with id: {data['arrival_id']} does not exist or you do not have permission to edit it'}, False
+        try:
+            company = Company.objects.get(name=data['company'])
+        except ObjectDoesNotExist:
+            company = Company(name=data['company'])
+            company.save()
+        arrival_m.company = company
+        try:
+            car = Car.objects.get(register_number=data['register_number'])
+        except ObjectDoesNotExist:
+            car = Car(register_number=data['register_number'])
+            car.save()
+        arrival_m.car = car
+        arrival_m.arrival_purpose = data['description']
+        arrival_m.arrival_timestamp = None
+        arrival_m.leave_timestamp = None
+        arrival_hosts_ids = [host['id'] for host in data['hosts']]
+        all_hosts, success = hosts_API.get_all_hosts_data()
+        if not success:
+            return all_hosts, success
+        all_hosts = all_hosts['message']
+        known_hosts_ids = set(h.id for h in all_hosts)
+        for arr_h in arrival_hosts_ids:
+            if not arr_h in known_hosts_ids:
+                transaction.set_rollback(True)
+                return {'error': f'Unknown host with id: {arr_h}'}, False
+        arrival_responsibilities = Responsibility.objects.filter(arrival=arrival_m).all()
+        for responsibility in arrival_responsibilities:
+            if not responsibility.host in arrival_hosts_ids:
+                responsibility.delete()
+        for arr_host_id in arrival_hosts_ids:
+            found = False
+            for responsibility in arrival_responsibilities:
+                if arr_host_id == responsibility.host:
+                    found = True
+            if not found:
+                Responsibility(
+                    host=arr_host_id,
+                    arrival=arrival_m
+                ).save()
+        arrival_m.save()
+        return {'message': f'Arrival with id: {arrival_m.id} updated successfully'}, True
 
 
 class HostActiveGuestsService:

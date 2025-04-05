@@ -1,0 +1,77 @@
+{% extends "host/master.html" %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'add_guest/add_guest.js' %}"></script>
+    <script src="{% static 'edit_guest.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+    Edytuj gościa
+{% endblock %}
+
+{% block header %}
+    Edytuj gościa {{ arrival_data.guest.firstname }} {{ arrival_data.guest.lastname }}
+{% endblock %}
+
+{% block content %}
+
+    <div id="main-form">
+        <label for="company-name">Nazwa firmy</label>
+        <input list="companies" id="companies-list" value="{{ arrival_data.company|default:'' }}">
+        <datalist id="companies">
+            {% for company in companies_data %}
+                <option value="{{company.name}}">
+            {% endfor %}
+        </datalist>
+
+        <label for="register-nb" {% if not confirmed %}style="display:none"{% endif %}>Numer rejestracyjny</label>
+        <input type="text" id="register-nb" value="{{ arrival_data.register_number|default:'' }}" placeholder="opcjonalnie" {% if not confirmed %}hidden{% endif %}>
+    
+        <label for="arrival-purpose">Cel przybycia</label>
+        <textarea id="arrival-purpose">{{ arrival_data.description }}</textarea>
+
+        <div id="hosts-form">
+            <input list="hosts" id="hosts-list">
+            <datalist id="hosts">
+                {% for host in hosts_data %}
+                    <option value="{{host.firstname}} {{host.lastname}}">
+                {% endfor %}
+            </datalist>
+            <button id="add-host" onclick="addHost()">Dodaj</button>
+
+            <table id="hosts-table">
+                <thead>
+                    <tr>
+                        <th style="display: none">ID</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Akcja</th>
+                    </tr>
+                </thead>
+                <tbody id="host-table-body">
+                    {% for host in arrival_data.hosts %}
+                        <tr>
+                            <td style="display: none">{{ host.id }}</td>
+                            <td>{{ host.firstname }}</td>
+                            <td>{{ host.lastname }}</td>
+                            <td><button onclick="this.parentNode.parentNode.remove()">-</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <input type="submit" value="Zapisz zmiany" onclick="postGuestData()">
+        <a href={% url 'host-not-confirmed-guests' %}><button class="main-button">Anuluj</button></a>
+    </div>
+
+    {{ process_url|json_script:"process_url_json" }}
+    {{ author|json_script:"author_json" }}
+    {{ confirmed|json_script:"confirmed_json" }}
+    {{ hosts_data|json_script:"hosts_data_json" }}
+    {{ companies_data|json_script:"companies_data_json" }}
+    {{ registered_guests_data|json_script:"registered_guests_data_json" }}
+    {{ arrival_data|json_script:"arrival_data_json" }}
+
+{% endblock %}

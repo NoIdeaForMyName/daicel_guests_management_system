@@ -46,7 +46,7 @@ function displayGuests(guests) {
         row.appendChild(hostsCell);
 
         const actionsCell = document.createElement("td");
-        actionsCell.innerHTML = `<a href="/host/edit_guest/${guest.id}" class="edit-link">Edytuj</a>`;
+        actionsCell.innerHTML = `<a href="/host/edit_guest/${guest.id}" class="edit-link"><button>Edytuj</button></a>`;
         row.appendChild(actionsCell);
 
         guestsTableBody.appendChild(row);

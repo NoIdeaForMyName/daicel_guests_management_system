@@ -1,6 +1,10 @@
+from django.contrib.messages import success
+from django.forms import model_to_dict
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.template import loader
+from django.urls import reverse
+
 from database_models.models import *
 from database_models.models import Company, Guest, Car, Arrival, Responsibility
 import hosts_API.functionalities as hosts_API
@@ -45,6 +49,7 @@ def my_guests(request):
     template = loader.get_template('host/my_guests.html')
     return HttpResponse(template.render())
 
+@login_required(login_url="/host/login/")
 def not_confirmed_guests(request):
     service = HostNotConfirmedGuestsService(request.user.id)
     guests_data, success = service.get_not_confirmed_guests()
@@ -76,3 +81,51 @@ def guests_history(request):
     return render(request, 'host/guests_history.html', {
         'guests_history': history_data
     })
+
+
+@login_required
+def edit_guest(request, arrival_id):
+    not_confirmed_guests_service = HostNotConfirmedGuestsService(request.user.id)
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        response, success = not_confirmed_guests_service.update_arrival(data)
+        if success:
+            return JsonResponse({'redirect_url': '/host/not-confirmed-guests'})
+        else:
+            return JsonResponse({"error": response}, status=400)
+        # return JsonResponse({"message": "Guest added", "received": data})
+
+    arrival = get_object_or_404(Arrival, id=arrival_id)
+
+    # Sprawdź uprawnienia
+    if not Responsibility.objects.filter(host=request.user.id, arrival=arrival).exists():
+        return HttpResponseForbidden("Brak uprawnień do edycji tego gościa")
+
+    # Przygotuj dane kontekstowe
+    hosts_data, success = hosts_API.get_all_hosts_data_dict()
+    if not success:
+        return hosts_data, success
+    hosts_data = hosts_data['message']
+    company = arrival.company.name if arrival.company else ''
+    host_ids = set(r.host for r in arrival.responsibility_set.all())
+    hosts = [host for host in hosts_data if host['id'] in host_ids]
+
+    context = {
+        'companies_data': list(Company.objects.all().values()),
+        'hosts_data': hosts_data,
+        'registered_guests_data': list(Guest.objects.all().values()),
+        #'process_url': reverse('host-edit-guest', arrival_id),
+        'process_url': f'/host/edit_guest/{arrival_id}/',
+        'confirmed': arrival.confirmed,
+        'author': [h for h in hosts_data if h['id'] == request.user.id][0],
+        'arrival_data': {
+            'id': arrival.id,
+            'company': company,
+            'register_number': arrival.car.register_number if arrival.car else '',
+            'description': arrival.arrival_purpose,
+            'guest': model_to_dict(arrival.guest),
+            'hosts': hosts
+        }
+    }
+    return render(request, 'host/edit_guest.html', context)
