@@ -4,8 +4,9 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="{% static 'header.css' %}">
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     {% block links %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
