@@ -1,4 +1,5 @@
 import datetime
+from datetime import tzinfo
 
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
@@ -11,6 +12,7 @@ from database_models.models import Company, Guest, Car, Arrival, Responsibility
 import hosts_API.functionalities as hosts_API
 import json
 from .security import validate_ip
+from django.utils import timezone
 
 
 
@@ -18,7 +20,10 @@ from .security import validate_ip
 def home(request):
     template = loader.get_template('guardhouse/home.html')
     today_date = datetime.datetime.combine(datetime.datetime.today().date(), datetime.datetime.min.time())
+    today_date = timezone.make_aware(today_date)
+    print('aware:', today_date)
     old_active_guests = (Arrival.objects
+                         .filter(confirmed=True)
                          .filter(leave_timestamp=None)
                          .filter(arrival_timestamp__lt=today_date)
                          .all())

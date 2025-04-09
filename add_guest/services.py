@@ -3,6 +3,7 @@ import hosts_API.functionalities as hosts_API
 from datetime import datetime, time
 from daicel_guests_management_system.constants import *
 from django.db import transaction
+from django.utils import timezone
 
 
 @transaction.atomic
@@ -75,7 +76,7 @@ def add_new_arrival_data(data):
             guest=guest_m,
             arrival_purpose=description,
             car=car_m,
-            arrival_timestamp=datetime.now() if confirmed else None,
+            arrival_timestamp=timezone.now() if confirmed else None,
             company=company_m
         )
         arrival_m.save()

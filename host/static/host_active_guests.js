@@ -11,6 +11,9 @@ let noDataInfo;
 
 document.addEventListener("DOMContentLoaded", () => {
     activeGuests = JSON.parse(document.getElementById('active_guests_json').textContent);
+    activeGuests.forEach(arrival => {
+        arrival.arrival_timestamp = new Date(arrival.arrival_timestamp);
+    });
 
     // Initialize filters and elements
     firstnameFilter = document.getElementById("firstname-filter");
@@ -41,7 +44,7 @@ function displayGuests(guests) {
         row.appendChild(createTextTableField(guest.name));
         row.appendChild(createTextTableField(guest.company));
         row.appendChild(createTextTableField(guest.register_number));
-        row.appendChild(createTextTableField(guest.arrival_timestamp));
+        row.appendChild(createTextTableField(guest.arrival_timestamp.toLocaleString()));
         row.appendChild(createTextTableField(guest.description));
 
         const hostsCell = document.createElement("td");

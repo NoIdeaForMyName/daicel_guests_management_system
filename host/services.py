@@ -148,7 +148,7 @@ class HostActiveGuestsService:
                 'name': f"{arrival.guest.firstname} {arrival.guest.lastname}",
                 'company': arrival.company.name if arrival.company else None,
                 'register_number': arrival.car.register_number if arrival.car else None,
-                'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
+                'arrival_timestamp': arrival.arrival_timestamp.isoformat(),
                 'description': arrival.arrival_purpose,
                 'hosts': hosts
             })
@@ -187,8 +187,8 @@ class HostGuestsHistoryService:
                 'name': f"{arrival.guest.firstname} {arrival.guest.lastname}",
                 'company': arrival.company.name if arrival.company else None,
                 'register_number': arrival.car.register_number if arrival.car else None,
-                'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
-                'leave_timestamp': arrival.leave_timestamp.strftime(DATETIME_FORMAT),
+                'arrival_timestamp': arrival.arrival_timestamp.isoformat(),
+                'leave_timestamp': arrival.leave_timestamp.isoformat(),
                 'description': arrival.arrival_purpose,
                 'hosts': hosts
             })

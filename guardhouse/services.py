@@ -6,6 +6,7 @@ from django.db import transaction
 from django.forms.models import model_to_dict
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 
 
@@ -41,7 +42,7 @@ class ActiveGuestsService:
                     'name': f'{arrival.guest.firstname} {arrival.guest.lastname}',
                     'company': arrival.company.name if arrival.company else None,
                     'register_number': arrival.car.register_number if arrival.car else None,
-                    'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
+                    'arrival_timestamp': arrival.arrival_timestamp.isoformat(),
                     'description': arrival.arrival_purpose,
                     'hosts': [
                         {
@@ -57,7 +58,7 @@ class ActiveGuestsService:
     def end_arrivals(self, ids):
         arrivals = Arrival.objects.filter(id__in=ids).all()
         for arrival in arrivals:
-            arrival.leave_timestamp = datetime.now()
+            arrival.leave_timestamp = timezone.now()
             arrival.save()
 
 
@@ -85,8 +86,8 @@ class GuestsHistoryService:
                     'name': f'{arrival.guest.firstname} {arrival.guest.lastname}',
                     'company': arrival.company.name if arrival.company else None,
                     'register_number': arrival.car.register_number if arrival.car else None,
-                    'arrival_timestamp': arrival.arrival_timestamp.strftime(DATETIME_FORMAT),
-                    'leave_timestamp': arrival.leave_timestamp.strftime(DATETIME_FORMAT),
+                    'arrival_timestamp': arrival.arrival_timestamp.isoformat(),
+                    'leave_timestamp': arrival.leave_timestamp.isoformat(),
                     'description': arrival.arrival_purpose,
                     'hosts': [
                         {
@@ -149,7 +150,7 @@ class NotConfirmedArrivalsService:
                 car.save()
         for arrival in arrivals_m:
             if not arrival.confirmed:
-                arrival.arrival_timestamp = datetime.now()
+                arrival.arrival_timestamp = timezone.now()
                 arrival.confirmed = True
                 arrival.car = car
                 arrival.save()

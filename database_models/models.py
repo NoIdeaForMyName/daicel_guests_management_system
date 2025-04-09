@@ -3,6 +3,7 @@ from daicel_guests_management_system.constants import *
 from dataclasses import dataclass
 #from django.core.cache import caches
 from hosts_API import functionalities as hosts_API
+from django.utils import timezone
 
 
 #CACHE = caches['default']
@@ -71,7 +72,7 @@ class Arrival(models.Model):
         db_table = "Arrivals"
 
     def __str__(self):
-        return f"{str(self.guest)}{"; " + str(self.car) if self.car != None else ""}{"; " + self.arrival_timestamp.strftime(DATETIME_FORMAT) if self.arrival_timestamp != None else ""}{"; " + self.leave_timestamp.strftime(DATETIME_FORMAT) if self.leave_timestamp else ""}; {self.arrival_purpose}"
+        return f"{str(self.guest)}{"; " + str(self.car) if self.car != None else ""}{"; " + timezone.localtime(self.arrival_timestamp).isoformat() if self.arrival_timestamp != None else ""}{"; " + self.leave_timestamp.strftime(DATETIME_FORMAT) if self.leave_timestamp else ""}; {self.arrival_purpose}"
 
 
 class Responsibility(models.Model):

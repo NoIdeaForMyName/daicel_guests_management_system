@@ -1,6 +1,6 @@
 
-const BASE_DATE = "1970-01-01T";
-const TZ_OFFSET = new Date().getTimezoneOffset() * 60000 // in ms
+//const BASE_DATE = "1970-01-01T";
+//const TZ_OFFSET = new Date().getTimezoneOffset() * 60000 // in ms
 
 export function createTextTableField(text, hidden=false) {
     let tableNode = document.createElement("td");
@@ -33,27 +33,31 @@ export function filterRows(allArrivals, values, columns) {
             }
             let column = columns[i];
             let columnValue;
-            let temp_date;
+            let d;
             switch (column) {
                 case 'firstname':
                 case 'lastname':
                     columnValue = arrival['name'].split(' ')[column === 'firstname' ? 0 : 1];
                     break;
                 case 'date_start':
-                    columnValue = new Date(arrival['arrival_timestamp'].split(',')[0].trim()).getTime();
-                    value = new Date(value).getTime() + TZ_OFFSET;
+                    d  = arrival['arrival_timestamp']
+                    columnValue = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+                    value = new Date(value).getTime()
                     break;
                 case 'time_start':
-                    columnValue = new Date(BASE_DATE + arrival['arrival_timestamp'].split(',')[1].trim()).getTime();
-                    value = new Date(BASE_DATE + value).getTime();
+                    d  = arrival['arrival_timestamp']
+                    columnValue = d.getTime();
+                    value = new Date(d.getFullYear(), d.getMonth(), d.getDate(), value.split(':')[0], value.split(':')[1]).getTime();
                     break;
                 case 'date_end':
-                    columnValue = new Date(arrival['leave_timestamp'].split(',')[0].trim()).getTime();
-                    value = new Date(value).getTime() + TZ_OFFSET;
+                    d  = arrival['leave_timestamp']
+                    columnValue = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+                    value = new Date(value).getTime();
                     break;
                 case 'time_end':
-                    columnValue = new Date(BASE_DATE + arrival['leave_timestamp'].split(',')[1].trim()).getTime();
-                    value = new Date(BASE_DATE + value).getTime();
+                    d  = arrival['leave_timestamp']
+                    columnValue = d.getTime();
+                    value = new Date(d.getFullYear(), d.getMonth(), d.getDate(), value.split(':')[0], value.split(':')[1]).getTime();
                     break;
                 default:
                     columnValue = arrival[column];

@@ -15,6 +15,10 @@ let noDataInfo;
 
 document.addEventListener("DOMContentLoaded", () => {
     guestsHistory = JSON.parse(document.getElementById('guests_history_json').textContent);
+    guestsHistory.forEach(arrival => {
+        arrival.arrival_timestamp = new Date(arrival.arrival_timestamp);
+        arrival.leave_timestamp = new Date(arrival.leave_timestamp);
+    });
 
     // Initialize all filters
     firstnameFilter = document.getElementById("firstname-filter");
@@ -52,8 +56,8 @@ function displayHistory(history) {
         row.appendChild(createTextTableField(entry.name));
         row.appendChild(createTextTableField(entry.company));
         row.appendChild(createTextTableField(entry.register_number));
-        row.appendChild(createTextTableField(entry.arrival_timestamp));
-        row.appendChild(createTextTableField(entry.leave_timestamp));
+        row.appendChild(createTextTableField(entry.arrival_timestamp.toLocaleString()));
+        row.appendChild(createTextTableField(entry.leave_timestamp.toLocaleString()));
         row.appendChild(createTextTableField(entry.description));
 
         const hostsCell = document.createElement("td");

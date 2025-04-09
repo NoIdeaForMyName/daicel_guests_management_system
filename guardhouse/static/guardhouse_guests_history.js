@@ -18,6 +18,10 @@ let noDataInfo;
 
 document.addEventListener("DOMContentLoaded", (event) => {
     historyArrivals = JSON.parse(document.getElementById('archive_arrivals_json').textContent);
+    historyArrivals.forEach(arrival => {
+        arrival.arrival_timestamp = new Date(arrival.arrival_timestamp);
+        arrival.leave_timestamp = new Date(arrival.leave_timestamp);
+    });
 
     arrivalsTableBody = document.getElementById("arrivals-table-body");
 
@@ -59,8 +63,8 @@ function displayArrivals(arrivals) {
         row.appendChild(createTextTableField(arrival.name));
         row.appendChild(createTextTableField(arrival.company));
         row.appendChild(createTextTableField(arrival.register_number));
-        row.appendChild(createTextTableField(arrival.arrival_timestamp));
-        row.appendChild(createTextTableField(arrival.leave_timestamp));
+        row.appendChild(createTextTableField(arrival.arrival_timestamp.toLocaleString().slice(0, -3)));
+        row.appendChild(createTextTableField(arrival.leave_timestamp.toLocaleString().slice(0, -3)));
         row.appendChild(createTextTableField(arrival.description));
 
         let hostsTableNode = document.createElement("td");
