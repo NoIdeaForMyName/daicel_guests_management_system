@@ -3,7 +3,7 @@
 
 
 {% block links %}
-    <script src="{% static 'add_guest/add_guest.js' %}"></script>
+    <script src="{% static 'add_guest/add_guest.js' %}" type="module"></script>
 {% endblock %}
 
 {% block title %}
@@ -39,7 +39,7 @@
             <label for="guest-lname">Nazwisko</label>
             <input type="text" id="guest-lname">
     
-            <button id="add-guest" onclick="addGuest()">Dodaj</button>
+            <button id="add-guest">Dodaj</button>
     
             <table id="guests-table">
             <thead>
@@ -61,7 +61,7 @@
                     <option value="{{host.firstname}} {{host.lastname}}">
                 {% endfor %}
             </datalist>
-            <button id="add-host" onclick="addHost()">Dodaj</button>
+            <button id="add-host">Dodaj</button>
 
             <table id="hosts-table">
                 <thead>
@@ -85,7 +85,7 @@
             </table>
         </div>
 
-        <input type="submit" value="Akceptuj" onclick="postGuestData()">
+        <input id="submit-button" type="submit" value="Akceptuj">
 
     </div>
 

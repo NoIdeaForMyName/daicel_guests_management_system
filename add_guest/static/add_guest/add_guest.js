@@ -1,4 +1,4 @@
-import { getCookie } from "./script.js";
+import { getCookie } from "./../script.js";
 
 let process_url;
 
@@ -39,12 +39,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
 
     });
+
+    document.getElementById("add-guest").addEventListener('click', addGuest);
+    document.getElementById("add-host").addEventListener('click', addHost);
+    document.getElementById("submit-button").addEventListener('click', postGuestData);
 });
 
 function getDataFromTable(tableBody) {
     let values = [];
     for (let row of tableBody.children) {
-        value = []
+        let value = []
         for (let el of Array.from(row.children).slice(0, -1)) {
             value.push(el.textContent);
         }
@@ -98,8 +102,8 @@ async function postGuestData() {
             scrollTop();
         })
         .catch(error => {
-            alert(`Error: ${error}`)}
-        );
+            alert(`Error: ${error.message.slice(1, -1)}`);
+        });
     }
 }
 
@@ -117,7 +121,7 @@ function sendFormToServer(json) {
         return response.json()
         .then(data => {
             if (!response.ok) {
-                throw new Error(JSON.stringify(data));
+                throw new Error(JSON.stringify(data.error));
             }
             return data;
         });
@@ -194,7 +198,7 @@ function addHost() {
 
     const newHostRow = document.createElement("tr");
 
-    newHostRow.appendChild(createTextTableField(id, display='none'));
+    newHostRow.appendChild(createTextTableField(id, 'none'));
     newHostRow.appendChild(createTextTableField(fname));
     newHostRow.appendChild(createTextTableField(lname));    
     newHostRow.appendChild(createCheckboxTableField());
@@ -225,7 +229,7 @@ function addGuest() {
         alert("Wprowadzony gość nie istnieje w systemie i zostanie utworzony. Jeśli to błąd - usuń gościa z listy");
     }
 
-    newGuestRow.appendChild(createTextTableField(id, display='none'));
+    newGuestRow.appendChild(createTextTableField(id, 'none'));
     newGuestRow.appendChild(createTextTableField(fname));
     newGuestRow.appendChild(createTextTableField(lname));
     newGuestRow.appendChild(createCheckboxTableField());
