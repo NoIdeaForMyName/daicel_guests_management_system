@@ -263,13 +263,15 @@ function createTextTableField(text, display='') {
     let tableNode = document.createElement("td");
     tableNode.textContent = text;
     tableNode.style.display = display;
+    tableNode.className = "align-middle";
     return tableNode;
 }
 
 function createCheckboxTableField() {
     let actionTableNode = document.createElement("td");
     let actionNode = document.createElement("button");
-    actionNode.textContent = "-";
+    actionNode.className = "btn btn-danger btn-sm";
+    actionNode.innerHTML = '<i class="bi bi-trash"></i>';
     actionNode.onclick = function() {this.parentNode.parentNode.remove();};
     actionTableNode.appendChild(actionNode);
     return actionTableNode;
