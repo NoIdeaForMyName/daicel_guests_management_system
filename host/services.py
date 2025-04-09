@@ -104,6 +104,18 @@ class HostNotConfirmedGuestsService:
         arrival_m.save()
         return {'message': f'Arrival with id: {arrival_m.id} updated successfully'}, True
 
+    @transaction.atomic
+    def delete_arrival(self, arrival_id: int):
+        try:
+            to_delete_arr = self.not_confirmed_guests.get(arrival_id=arrival_id).arrival
+            to_delete_resp_list = Responsibility.objects.filter(arrival_id=arrival_id).all()
+        except ObjectDoesNotExist:
+            return {'error': f'No not confirmed arrival with id: {arrival_id}'}, False
+        for resp in to_delete_resp_list:
+            resp.delete()
+        to_delete_arr.delete()
+        return {'message': f'Arrival with id: {arrival_id} deleted successfully'}, True
+
 
 class HostActiveGuestsService:
     def __init__(self, user_id):

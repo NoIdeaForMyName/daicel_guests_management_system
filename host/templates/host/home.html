@@ -9,9 +9,11 @@
 {% endblock %}
 
 {% block content %}
-    <h1>STRONA GŁÓWNA TODO</h1>
-    <h2>Tu będzie INFO m.in. o tym:</h2>
-    <p>JESZCZE NIE WIEM CO ;)</p>
+
+    <div class="info">
+        <h2>Liczba niepotwierdzonych spotkań: {{ not_confirmed_arrivals_nb }}</h2>
+        <h2>Liczba aktywnych spotkań: {{ active_arrivals_nb }}</h2>
+    </div>
 
     <a href={% url 'main-menu-home' %}>Powrów do głównego menu</a>
 

@@ -1,4 +1,5 @@
 import { createTextTableField, filterRows } from './guests_service.js';
+import { getCookie } from './script.js'
 
 let notConfirmedGuests;
 let firstnameFilter;
@@ -45,9 +46,38 @@ function displayGuests(guests) {
         });
         row.appendChild(hostsCell);
 
-        const actionsCell = document.createElement("td");
-        actionsCell.innerHTML = `<a href="/host/edit_guest/${guest.id}" class="edit-link"><button>Edytuj</button></a>`;
-        row.appendChild(actionsCell);
+        const actionCell = document.createElement("td");
+
+        const editButton = document.createElement('a');
+        editButton.href = `/host/edit_guest/${guest.id}`;
+        editButton.className = "edit-link";
+        editButton.innerHTML = `<button>Edytuj</button>`;
+        actionCell.appendChild(editButton);
+        //editButton.innerHTML = `<a href="/host/edit_guest/${guest.id}" class="edit-link"><button>Edytuj</button></a>`;
+
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'POST';
+        deleteForm.action = `not-confirmed-guests/delete_guest/${guest.id}/`;
+        deleteForm.onsubmit = function() {
+            return confirm('Czy napewno chcesz usunąć tę wizytę?');
+        };
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = getCookie('csrftoken');
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'submit';
+        deleteButton.textContent = 'Usuń';
+        deleteButton.className = 'delete-link';
+
+        deleteForm.appendChild(csrfInput);
+        deleteForm.appendChild(deleteButton);
+
+        actionCell.appendChild(deleteForm);
+
+        row.appendChild(actionCell);
 
         guestsTableBody.appendChild(row);
     });

@@ -41,7 +41,12 @@ def login_host(request):
 @login_required(login_url="/host/login/")
 def home(request):
     template = loader.get_template('host/home.html')
-    return HttpResponse(template.render())
+    not_confirmed_guests_nb = len(HostNotConfirmedGuestsService(request.user.id).not_confirmed_guests)
+    active_guests_nb = len(HostActiveGuestsService(request.user.id).active_arrivals)
+    return HttpResponse(template.render({
+        'not_confirmed_arrivals_nb': not_confirmed_guests_nb,
+        'active_arrivals_nb': active_guests_nb
+    }))
 
 
 @login_required(login_url="/host/login/")
@@ -129,3 +134,15 @@ def edit_guest(request, arrival_id):
         }
     }
     return render(request, 'host/edit_guest.html', context)
+
+@login_required
+def delete_guest(request, arrival_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "wrong HTTP method"}, status=400)
+    not_confirmed_guests_service = HostNotConfirmedGuestsService(request.user.id)
+    message, success = not_confirmed_guests_service.delete_arrival(arrival_id)
+    if not success:
+        return JsonResponse(message, status=400)
+    return redirect('host-not-confirmed-guests')
+
+

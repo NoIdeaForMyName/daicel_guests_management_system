@@ -74,6 +74,7 @@
         <h2>
             Brak rekordów do wyświetlenia
         </h2>
+        <a href="{% url 'guardhouse-add-guest' %}"><button>Utwórz nową wizytę</button></a>
     </div>
 
     {{ not_confirmed_arrivals|json_script:"not_confirmed_arrivals_json" }}

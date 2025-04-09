@@ -9,10 +9,12 @@
 {% endblock %}
 
 {% block content %}
-    <h1>STRONA GŁÓWNA TODO</h1>
-    <h2>Tu będzie INFO m.in. o tym:</h2>
-    <p>że pozostały aktywne, niezakończone spotkania np. z poprzedniego dnia i należy je usunąć</p>
-    <p>ile czasu pozostało do automatycznego usunięcia zarchiwizowanych danych z bazy</p>
+
+    <div class="info" style="{% if old_guest_nb == 0 %}display:none;{% endif %}">
+        <h2>UWAGA - przedawnione aktywne wizyty</h2>
+        <p>W systemie widoczne są aktywne wizyty z poprzednich dni, które powinny zostać zakończone</p>
+        <p>Liczba przedawnionych wizyt: {{ old_guest_nb }}</p>
+    </div>
 
     <a href={% url 'main-menu-home' %}>Powrów do głównego menu</a>
 

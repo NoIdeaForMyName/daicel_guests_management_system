@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template import loader
@@ -15,7 +17,14 @@ from .security import validate_ip
 @validate_ip
 def home(request):
     template = loader.get_template('guardhouse/home.html')
-    return HttpResponse(template.render())
+    today_date = datetime.datetime.combine(datetime.datetime.today().date(), datetime.datetime.min.time())
+    old_active_guests = (Arrival.objects
+                         .filter(leave_timestamp=None)
+                         .filter(arrival_timestamp__lt=today_date)
+                         .all())
+    return HttpResponse(template.render({
+        'old_guest_nb': len(old_active_guests)
+    }))
 
 
 @validate_ip
