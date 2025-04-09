@@ -41,8 +41,8 @@ def add_guest_process(request):
         data = json.loads(request.body)
         response, success = add_new_arrival_data(data)
         if success:
-            return JsonResponse({"message": "Arrival added successfully"}, status=200)
+            return JsonResponse({"message": "Wizyta dodana pomyślnie"}, status=200)
         else:
             return JsonResponse(response, status=400)
         #return JsonResponse({"message": "Guest added", "received": data})
-    return JsonResponse({"error": "Incorrect request"}, status=400)
+    return JsonResponse({"error": "Niepoprawne żądanie"}, status=400)

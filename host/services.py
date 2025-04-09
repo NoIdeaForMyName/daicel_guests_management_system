@@ -61,7 +61,7 @@ class HostNotConfirmedGuestsService:
             #arrival_m = Arrival.objects.filter(confirmed=False).get(data['arrival_id'])
         except ObjectDoesNotExist:
             transaction.set_rollback(True)
-            return {'error': f'Arrival with id: {data['arrival_id']} does not exist or you do not have permission to edit it'}, False
+            return {'error': f'Wizyta o id: {data['arrival_id']} nie istnieje lub nie masz uprawnień do jej edycji'}, False
         try:
             company = Company.objects.get(name=data['company'])
         except ObjectDoesNotExist:
@@ -86,7 +86,7 @@ class HostNotConfirmedGuestsService:
         for arr_h in arrival_hosts_ids:
             if not arr_h in known_hosts_ids:
                 transaction.set_rollback(True)
-                return {'error': f'Unknown host with id: {arr_h}'}, False
+                return {'error': f'Nieznany gospodarz o id: {arr_h}'}, False
         arrival_responsibilities = Responsibility.objects.filter(arrival=arrival_m).all()
         for responsibility in arrival_responsibilities:
             if not responsibility.host in arrival_hosts_ids:
@@ -102,7 +102,7 @@ class HostNotConfirmedGuestsService:
                     arrival=arrival_m
                 ).save()
         arrival_m.save()
-        return {'message': f'Arrival with id: {arrival_m.id} updated successfully'}, True
+        return {'message': f'Wizyta o id: {arrival_m.id} pomyślnie zaktualizowana'}, True
 
     @transaction.atomic
     def delete_arrival(self, arrival_id: int):
@@ -110,11 +110,11 @@ class HostNotConfirmedGuestsService:
             to_delete_arr = self.not_confirmed_guests.get(arrival_id=arrival_id).arrival
             to_delete_resp_list = Responsibility.objects.filter(arrival_id=arrival_id).all()
         except ObjectDoesNotExist:
-            return {'error': f'No not confirmed arrival with id: {arrival_id}'}, False
+            return {'error': f'Brak niepotwierdzonych spotkań o id: {arrival_id}'}, False
         for resp in to_delete_resp_list:
             resp.delete()
         to_delete_arr.delete()
-        return {'message': f'Arrival with id: {arrival_id} deleted successfully'}, True
+        return {'message': f'Wizyta o id: {arrival_id} usunięta pomyślnie'}, True
 
 
 class HostActiveGuestsService:

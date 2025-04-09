@@ -40,7 +40,7 @@ def add_new_arrival_data(data):
     if register_nb:
         if not Car.validate_register_number(register_nb):
             transaction.set_rollback(True)
-            return {'error': f"Incorrect register number {register_nb}"}, False
+            return {'error': f"Nieprawidłowy numer rejestracyjny: {register_nb}"}, False
         car_m = Car.objects.filter(register_number=register_nb).first()
         if car_m is None:
             car_m = Car(register_number=register_nb)
@@ -52,7 +52,7 @@ def add_new_arrival_data(data):
             guest_m = Guest.objects.filter(id=guest['id']).first()
             if guest_m == None or (guest_m.firstname, guest_m.lastname) != (guest['firstname'], guest['lastname']):
                 transaction.set_rollback(True)
-                return {'error': f"Provided guest id doesn't match the one from the database"}, False
+                return {'error': f"Podane id gościa nie zgadza się z zapisanym w systemie"}, False
         else:
             guest_m = Guest(
                 firstname=guest['firstname'],
@@ -67,7 +67,7 @@ def add_new_arrival_data(data):
         host_m_API = hosts_API.FullHost(**host_API)
         if not host_m_API in all_hosts:
             transaction.set_rollback(True)
-            return {'error': f"Given host: {host_API} doesn't exists in the database"}, False
+            return {'error': f"Wybrany gospodarz: {host_API} nie jest znany w systemie"}, False
         hosts_m_API.append(host_m_API)
 
     for guest_m in guests_m:
@@ -91,4 +91,4 @@ def add_new_arrival_data(data):
 
         arrival_m.save()
 
-    return {'message': f"Arrivals added succesfully: {data}"}, True
+    return {'message': f"Wizyty dodane pomyślnie: {data}"}, True

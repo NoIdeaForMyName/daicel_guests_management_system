@@ -140,7 +140,7 @@ class NotConfirmedArrivalsService:
         arrivals_m = Arrival.objects.filter(id__in=arrival_ids)
         for a in arrivals_m:
             if a.confirmed:
-                return {'error': f'Arrival with id: {a.id} is already confirmed'}, False
+                return {'error': f'Wizyta o id: {a.id} już została zatwierdzona'}, False
         car = None
         if register_nb:
             try:
@@ -154,5 +154,5 @@ class NotConfirmedArrivalsService:
                 arrival.confirmed = True
                 arrival.car = car
                 arrival.save()
-        return {'message': f'Arrivals confirmed successfully'}, True
+        return {'message': f'Wizyty dodane pomyślnie'}, True
 

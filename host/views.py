@@ -138,7 +138,7 @@ def edit_guest(request, arrival_id):
 @login_required
 def delete_guest(request, arrival_id):
     if request.method != "POST":
-        return JsonResponse({"error": "wrong HTTP method"}, status=400)
+        return JsonResponse({"error": "Niepoprawna metoda HTTP"}, status=400)
     not_confirmed_guests_service = HostNotConfirmedGuestsService(request.user.id)
     message, success = not_confirmed_guests_service.delete_arrival(arrival_id)
     if not success:
