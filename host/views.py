@@ -101,7 +101,7 @@ def edit_guest(request, arrival_id):
         data = json.loads(request.body)
         response, success = not_confirmed_guests_service.update_arrival(data)
         if success:
-            return JsonResponse({'redirect_url': '/host/not-confirmed-guests'})
+            return JsonResponse({'message': 'Wizyta edytowana pomyślnie'})
         else:
             return JsonResponse({"error": response}, status=400)
         # return JsonResponse({"message": "Guest added", "received": data})
@@ -127,6 +127,7 @@ def edit_guest(request, arrival_id):
         'registered_guests_data': list(Guest.objects.all().values()),
         #'process_url': reverse('host-edit-guest', arrival_id),
         'process_url': f'/host/edit_guest/{arrival_id}/',
+        'redirect_url': '/host/not-confirmed-guests',
         'confirmed': arrival.confirmed,
         'author': [h for h in hosts_data if h['id'] == request.user.id][0],
         'arrival_data': {

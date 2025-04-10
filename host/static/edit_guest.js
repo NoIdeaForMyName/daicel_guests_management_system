@@ -46,9 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 //.then(response => response.json())
                 .then(data => {
-                    if (data.redirect_url) {
-                        window.location.href = data.redirect_url;
-                    }
+                    window.location.href = redirect_url;
                 })
                 .catch(error => {
                     alert(`Error: ${error}`)}
