@@ -1,5 +1,6 @@
 
 let process_url;
+let redirect_url;
 
 let author_json;
 let confirmed_json;
@@ -18,6 +19,7 @@ const MAX_REGISTER_NB_LEN = 8;
 document.addEventListener("DOMContentLoaded", (event) => {
 
     process_url = JSON.parse(document.getElementById('process_url_json').textContent);
+    redirect_url = JSON.parse(document.getElementById('redirect_url_json').textContent);
 
     author_json = JSON.parse(document.getElementById('author_json').textContent);
     confirmed_json = JSON.parse(document.getElementById('confirmed_json').textContent);
@@ -96,9 +98,7 @@ async function postGuestData() {
             'hosts': hostsValues.map(host => ({'id': Number(host[0]), 'firstname': host[1], 'lastname': host[2]})),
         })
         .then(response => {
-            clearForm();
-            //location.reload();
-            scrollTop();
+            window.location.href = redirect_url;
         })
         .catch(error => {
             alert(`Error: ${error.message.slice(1, -1)}`);

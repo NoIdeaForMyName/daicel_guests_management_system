@@ -16,6 +16,7 @@ def add_guest(request, src):
     if src == "host": # host site
         base_template = 'host/master.html'
         process_url = '/host/add-guest-process'
+        redirect_url = '/host/not-confirmed-guests'
         confirmed = False
         for host in hosts:
             if host['id'] == request.user.id:
@@ -24,10 +25,12 @@ def add_guest(request, src):
     else:
         base_template = 'guardhouse/master.html'
         process_url = '/guardhouse/add-guest-process'
+        redirect_url = '/guardhouse/active-guests'
         confirmed = True
     return HttpResponse(template.render({
         "base_template": base_template,
         "process_url": process_url,
+        "redirect_url": redirect_url,
         "author": author,
         "confirmed": confirmed,
         "companies_data": companies,
