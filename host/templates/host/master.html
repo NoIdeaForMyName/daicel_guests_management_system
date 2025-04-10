@@ -12,10 +12,14 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav>{% include 'host/header.html' %}</nav>
-    <h1 class="my-3 text-center">{% block header %}{% endblock %}</h1>
-    {% block content %}{% endblock %}
-    <footer>{% include 'main_menu/footer.html' %}</footer>
+    <div id="page-container">
+        <nav>{% include 'host/header.html' %}</nav>
+        <div id="content-wrap">
+            <h1 class="my-3 text-center">{% block header %}{% endblock %}</h1>
+            {% block content %}{% endblock %}
+        </div>
+        <footer>{% include 'main_menu/footer.html' %}</footer>
+    </div>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>
