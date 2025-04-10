@@ -49,11 +49,11 @@ function displayArrivals(arrivals) {
     for (let arrival of arrivals) {
         let row = document.createElement("tr");
 
-        row.appendChild(createTextTableField(arrival.name));
+        row.appendChild(createTextTableField(arrival.name, false, "fw-bold"));
         row.appendChild(createTextTableField(arrival.company));
         row.appendChild(createTextTableField(arrival.register_number));
         row.appendChild(createTextTableField(arrival.arrival_timestamp.toLocaleString().slice(0, -3)));
-        row.appendChild(createTextTableField(arrival.description));
+        row.appendChild(createTextTableField(arrival.description, false, "fw-light fst-italic"));
 
         row.appendChild(createHostsTableField(arrival.hosts));
 

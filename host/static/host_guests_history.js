@@ -53,12 +53,12 @@ function displayHistory(history) {
     history.forEach(entry => {
         const row = document.createElement("tr");
 
-        row.appendChild(createTextTableField(entry.name));
+        row.appendChild(createTextTableField(entry.name, false, "fw-bold"));
         row.appendChild(createTextTableField(entry.company));
         row.appendChild(createTextTableField(entry.register_number));
         row.appendChild(createTextTableField(entry.arrival_timestamp.toLocaleString()));
         row.appendChild(createTextTableField(entry.leave_timestamp.toLocaleString()));
-        row.appendChild(createTextTableField(entry.description));
+        row.appendChild(createTextTableField(entry.description, false, "fw-light fst-italic"));
 
         const hostsCell = document.createElement("td");
         const badgeContainer = document.createElement("div");

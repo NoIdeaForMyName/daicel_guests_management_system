@@ -36,9 +36,9 @@ function displayGuests(guests) {
     guests.forEach(guest => {
         const row = document.createElement("tr");
 
-        row.appendChild(createTextTableField(guest.name));
+        row.appendChild(createTextTableField(guest.name, false, "fw-bold"));
         row.appendChild(createTextTableField(guest.company));
-        row.appendChild(createTextTableField(guest.description));
+        row.appendChild(createTextTableField(guest.description, false, "fw-light fst-italic"));
 
         row.appendChild(createHostsTableField(guest.hosts));
 

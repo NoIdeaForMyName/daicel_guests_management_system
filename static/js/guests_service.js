@@ -2,8 +2,9 @@
 //const BASE_DATE = "1970-01-01T";
 //const TZ_OFFSET = new Date().getTimezoneOffset() * 60000 // in ms
 
-export function createTextTableField(text, hidden=false) {
+export function createTextTableField(text, hidden=false, textClass='') {
     let tableNode = document.createElement("td");
+    tableNode.className = textClass;
     tableNode.textContent = text;
     tableNode.hidden = hidden
     return tableNode;
