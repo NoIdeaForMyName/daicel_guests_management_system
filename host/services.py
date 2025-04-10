@@ -83,7 +83,12 @@ class HostNotConfirmedGuestsService:
             return all_hosts, success
         all_hosts = all_hosts['message']
         known_hosts_ids = set(h.id for h in all_hosts)
+        checked_host_ids = set()
         for arr_h in arrival_hosts_ids:
+            if arr_h in checked_host_ids:
+                transaction.set_rollback(True)
+                return {'error': f'Gospodarz o id: {arr_h} został podany więcej niż jeden raz'}, False
+            checked_host_ids.add(arr_h)
             if not arr_h in known_hosts_ids:
                 transaction.set_rollback(True)
                 return {'error': f'Nieznany gospodarz o id: {arr_h}'}, False

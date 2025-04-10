@@ -68,6 +68,9 @@ def add_new_arrival_data(data):
         if not host_m_API in all_hosts:
             transaction.set_rollback(True)
             return {'error': f"Wybrany gospodarz: {host_API} nie jest znany w systemie"}, False
+        if host_m_API in hosts_m_API:
+            transaction.set_rollback(True)
+            return {'error': f"Gospodarz o id: {host_m_API.id} został podany więcej niż jeden raz"}, False
         hosts_m_API.append(host_m_API)
 
     for guest_m in guests_m:

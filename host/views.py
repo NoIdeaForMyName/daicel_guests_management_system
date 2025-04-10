@@ -103,7 +103,7 @@ def edit_guest(request, arrival_id):
         if success:
             return JsonResponse({'message': 'Wizyta edytowana pomyślnie'})
         else:
-            return JsonResponse({"error": response}, status=400)
+            return JsonResponse(response, status=400)
         # return JsonResponse({"message": "Guest added", "received": data})
 
     arrival = get_object_or_404(Arrival, id=arrival_id)
