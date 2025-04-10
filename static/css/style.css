@@ -13,3 +13,12 @@
 .main-content {
   flex: 1;
 }
+
+.custom-checkbox {
+    background-size: 80% !important;
+    border-width: 2px !important;
+}
+
+.custom-checkbox:checked {
+    background-size: 80% !important;
+}

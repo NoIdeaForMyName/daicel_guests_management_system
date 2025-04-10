@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function displayGuests(guests) {
     guestsTableBody.innerHTML = '';
 
-    guestsTable.style.display = guests.length ? "block" : "none";
+    guestsTable.style.display = guests.length ? "table" : "none";
     noDataInfo.style.display = guests.length ? "none" : "block";
 
     guests.forEach(guest => {
@@ -41,42 +41,55 @@ function displayGuests(guests) {
         row.appendChild(createTextTableField(guest.description));
 
         const hostsCell = document.createElement("td");
+        hostsCell.className = "d-flex flex-wrap gap-2";
         guest.hosts.forEach(host => {
-            hostsCell.innerHTML += `<p>${host.name}</p>`;
+            const badge = document.createElement("span");
+            badge.className = "badge bg-primary";
+            badge.textContent = host.name;
+            hostsCell.appendChild(badge);
         });
         row.appendChild(hostsCell);
 
         const actionCell = document.createElement("td");
+        actionCell.className = "text-nowrap";
 
-        const editButton = document.createElement('a');
+        const actionContainer = document.createElement("div");
+        actionContainer.className = "d-flex gap-2";
+
+        const editButton = document.createElement("a");
         editButton.href = `/host/edit_guest/${guest.id}`;
-        editButton.className = "edit-link";
-        editButton.innerHTML = `<button>Edytuj</button>`;
-        actionCell.appendChild(editButton);
-        //editButton.innerHTML = `<a href="/host/edit_guest/${guest.id}" class="edit-link"><button>Edytuj</button></a>`;
+        editButton.className = "btn btn-primary btn-sm";
+        editButton.innerHTML = `
+            <i class="bi bi-pencil"></i>
+            <span class="d-none d-md-inline">Edytuj</span>
+        `;
 
-        const deleteForm = document.createElement('form');
+        const deleteForm = document.createElement("form");
         deleteForm.method = 'POST';
         deleteForm.action = `not-confirmed-guests/delete_guest/${guest.id}/`;
+        deleteForm.className = "d-inline";
         deleteForm.onsubmit = function() {
             return confirm('Czy napewno chcesz usunąć tę wizytę?');
         };
 
-        const csrfInput = document.createElement('input');
+        const csrfInput = document.createElement("input");
         csrfInput.type = 'hidden';
         csrfInput.name = 'csrfmiddlewaretoken';
         csrfInput.value = getCookie('csrftoken');
 
-        const deleteButton = document.createElement('button');
+        const deleteButton = document.createElement("button");
         deleteButton.type = 'submit';
-        deleteButton.textContent = 'Usuń';
-        deleteButton.className = 'delete-link';
+        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.innerHTML = `
+            <i class="bi bi-trash"></i>
+            <span class="d-none d-md-inline">Usuń</span>
+        `;
 
         deleteForm.appendChild(csrfInput);
         deleteForm.appendChild(deleteButton);
-
-        actionCell.appendChild(deleteForm);
-
+        actionContainer.appendChild(editButton);
+        actionContainer.appendChild(deleteForm);
+        actionCell.appendChild(actionContainer);
         row.appendChild(actionCell);
 
         guestsTableBody.appendChild(row);

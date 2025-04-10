@@ -10,12 +10,25 @@ export function createTextTableField(text, hidden=false) {
 }
 
 export function createCheckboxTableField(id) {
-    let actionTableNode = document.createElement("td");
-    let actionNode = document.createElement("input");
+    const actionTableNode = document.createElement("td");
+    actionTableNode.className = "text-center align-middle";
+
+    const checkContainer = document.createElement("div");
+    checkContainer.className = "form-check d-inline-block";
+
+    const actionNode = document.createElement("input");
+    actionNode.className = "form-check-input m-0 custom-checkbox"; // Dodana klasa
     actionNode.type = "checkbox";
     actionNode.name = "check[]";
     actionNode.value = id;
-    actionTableNode.appendChild(actionNode);
+
+    actionNode.style.width = "1.5rem";
+    actionNode.style.height = "1.5rem";
+    actionNode.style.cursor = "pointer";
+
+    checkContainer.appendChild(actionNode);
+    actionTableNode.appendChild(checkContainer);
+
     return actionTableNode;
 }
 
