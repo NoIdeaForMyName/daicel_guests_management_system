@@ -193,7 +193,14 @@ function addHost() {
         return;
     }
 
-//            const host_to_add = hosts_data_json.filter(host => host.id===id)[0];
+    let hostTableBody = document.getElementById("host-table-body");
+    for (let h of hostTableBody.children) {
+        const prevHostId = h.children[0].textContent;
+        if (id === Number(prevHostId)) {
+            alert("Podany gospodarz jest już dodany");
+            return;
+        }
+    }
 
     const newHostRow = document.createElement("tr");
 
@@ -202,7 +209,6 @@ function addHost() {
     newHostRow.appendChild(createTextTableField(lname));    
     newHostRow.appendChild(createCheckboxTableField());
 
-    let hostTableBody = document.getElementById("host-table-body");
     hostTableBody.appendChild(newHostRow);
 
     hostNode.value = "";
