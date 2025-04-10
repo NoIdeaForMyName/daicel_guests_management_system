@@ -49,8 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = redirect_url;
                 })
                 .catch(error => {
-                    alert(`Error: ${error}`)}
-                );
+                    alert(`Error: ${error.message.slice(1, -1)}`);
+                });
             }
         }
     }
