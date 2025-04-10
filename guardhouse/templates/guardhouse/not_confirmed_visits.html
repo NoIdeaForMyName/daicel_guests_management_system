@@ -15,30 +15,40 @@
 
 {% block content %}
 
-    <div id="main-content" style="{% if not_confirmed_arrivals|length < 1 %}display:none;{% endif %}">
-        <div id="filters">
-            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
-            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
-            <input id="company-filter" type="text" placeholder="Wpisz firmę">
+<div class="container-fluid mt-4">
+    <div id="main-content" {% if not_confirmed_arrivals|length < 1 %}style="display:none;"{% endif %}>
+        <div id="filters" class="row g-2 mb-4">
+            <div class="col-lg-4">
+                <input id="firstname-filter" type="text" class="form-control" placeholder="Wpisz imię">
+            </div>
+            <div class="col-lg-4">
+                <input id="lastname-filter" type="text" class="form-control" placeholder="Wpisz nazwisko">
+            </div>
+            <div class="col-lg-4">
+                <input id="company-filter" type="text" class="form-control" placeholder="Wpisz firmę">
+            </div>
         </div>
 
         <form method="post" onsubmit="return confirmVisitsConfirmationPopup();">
-        {% csrf_token %}
+            {% csrf_token %}
 
             <!-- Popup form -->
-            <div id="end-form-popup" class="popup">
-                <label for="register_nb">Numer rejestracyjny (opcjonalnie)</label>
-                <input type="text" name="register_nb">
-
-                <button type="submit" class="btn">Akceptuj</button>
-                <button id="close-end-popup-button" type="button" class="btn cancel">Anuluj</button>
+            <div id="end-form-popup" class="popup p-4 border rounded bg-light mb-3" style="display:none; max-width: 400px;">
+                <div class="mb-3">
+                    <label for="register_nb" class="form-label">Numer rejestracyjny (opcjonalnie)</label>
+                    <input type="text" name="register_nb" class="form-control">
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Akceptuj</button>
+                    <button id="close-end-popup-button" type="button" class="btn btn-outline-danger">Anuluj</button>
+                </div>
             </div>
 
-            <button id="show-end-popup-button" type="button" class="main-button">Potwierdź wizyty</button>
+            <button id="show-end-popup-button" type="button" class="btn btn-secondary w-100 mb-3">Potwierdź wizyty</button>
 
-            <div id="arrivals">
-                <table id="arrivals-table">
-                    <thead>
+            <div id="arrivals" class="table-responsive">
+                <table id="arrivals-table" class="table table-striped align-middle w-100">
+                    <thead class="table-dark">
                         <tr>
                             <th>Imię Nazwisko</th>
                             <th>Firma</th>
@@ -50,33 +60,31 @@
                     <tbody id="arrivals-table-body">
                         {% for arrival in not_confirmed_arrivals %}
                             <tr>
-                                <td>{{arrival.name}}</td>
-                                <td>{{arrival.company}}</td>
-                                <td>{{arrival.description}}</td>
+                                <td>{{ arrival.name }}</td>
+                                <td>{{ arrival.company }}</td>
+                                <td>{{ arrival.description }}</td>
                                 <td>
                                     {% for host in arrival.hosts %}
-                                        <p>{{ host.name }}</p>
+                                        <p class="mb-0">{{ host.name }}</p>
                                     {% endfor %}
                                 </td>
                                 <td>
+                                    <!-- miejsce na checkbox/js lub inne elementy do zaznaczania -->
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-
         </form>
-
     </div>
 
-    <div id="no-data-info" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
-        <h2>
-            Brak rekordów do wyświetlenia
-        </h2>
-        <a href="{% url 'guardhouse-add-guest' %}"><button>Utwórz nową wizytę</button></a>
+    <div id="no-data-info" class="text-center mt-4" {% if not_confirmed_arrivals|length > 0 %}style="display:none;"{% endif %}>
+        <h4 class="text-muted">Brak rekordów do wyświetlenia</h4>
+        <a href="{% url 'guardhouse-add-guest' %}" class="btn btn-outline-primary mt-2">Utwórz nową wizytę</a>
     </div>
 
-    {{ not_confirmed_arrivals|json_script:"not_confirmed_arrivals_json" }}
+</div>
 
+{{ not_confirmed_arrivals|json_script:"not_confirmed_arrivals_json" }}
 {% endblock %}

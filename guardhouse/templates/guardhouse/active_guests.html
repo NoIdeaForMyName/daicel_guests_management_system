@@ -15,9 +15,10 @@
 
 {% block content %}
 
+<div class="container-fluid mt-4">
     <div id="main-content">
-        <div id="statistics">
-            <table id="statistics-table">
+        <div id="statistics" class="mb-4">
+            <table class="table table-bordered w-auto">
                 <tbody>
                     <tr>
                         <td>Liczba gości: {{ guest_nb }}</td>
@@ -27,22 +28,29 @@
             </table>
         </div>
 
-        <div id="filters">
-            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
-            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
-            <input id="company-filter" type="text" placeholder="Wpisz firmę">
-            <input id="car-filter" type="text" placeholder="Wpisz numer tablicy rejestracyjnej">
+        <div id="filters" class="row g-2 mb-4">
+            <div class="col-lg-3">
+                <input id="firstname-filter" type="text" class="form-control" placeholder="Wpisz imię">
+            </div>
+            <div class="col-lg-3">
+                <input id="lastname-filter" type="text" class="form-control" placeholder="Wpisz nazwisko">
+            </div>
+            <div class="col-lg-3">
+                <input id="company-filter" type="text" class="form-control" placeholder="Wpisz firmę">
+            </div>
+            <div class="col-lg-3">
+                <input id="car-filter" type="text" class="form-control" placeholder="Wpisz numer tablicy rejestracyjnej">
+            </div>
         </div>
-
 
         <form method="post" onsubmit="return endVisitsConfirmationPopup();">
             {% csrf_token %}
 
-            <input type="submit" value="Zakończ zaznaczone">
+            <input type="submit" value="Zakończ zaznaczone" class="btn btn-secondary w-100 mb-3">
 
-            <div id="arrivals">
-                <table id="arrivals-table">
-                    <thead>
+            <div id="arrivals" class="table-responsive">
+                <table id="arrivals-table" class="table table-striped align-middle w-100">
+                    <thead class="table-dark">
                         <tr>
                             <th>Imię Nazwisko</th>
                             <th>Firma</th>
@@ -56,21 +64,21 @@
                     <tbody id="arrivals-table-body">
                         {% for arrival in active_arrivals %}
                             <tr>
-                                <td>{{arrival.name}}</td>
-                                <td>{{arrival.company}}</td>
-                                <td>{{arrival.register_number}}</td>
-                                <td>{{arrival.arrival_timestamp}}</td>
-                                <td>{{arrival.description}}</td>
+                                <td>{{ arrival.name }}</td>
+                                <td>{{ arrival.company }}</td>
+                                <td>{{ arrival.register_number }}</td>
+                                <td>{{ arrival.arrival_timestamp }}</td>
+                                <td>{{ arrival.description }}</td>
                                 <td>
                                     {% for host in arrival.hosts %}
-                                        <p>{{ host.name }}</p>
+                                        <p class="mb-0">{{ host.name }}</p>
                                     {% endfor %}
                                 </td>
-                                <td class="end-arrival-button">
-                                    <form method="post" onsubmit="return confirm('Czy napewno chcesz zakończyć wizytę?');">
+                                <td>
+                                    <form method="post" onsubmit="return confirm('Czy napewno chcesz zakończyć wizytę?');" class="d-inline">
                                         {% csrf_token %}
                                         <input name="arrival_id" type="hidden" value="{{ arrival.id }}">
-                                        <button type="submit">Zakończ wizytę</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">Zakończ wizytę</button>
                                     </form>
                                 </td>
                             </tr>
@@ -78,16 +86,14 @@
                     </tbody>
                 </table>
             </div>
-
         </form>
+
+        <div id="no-data-info" class="text-center mt-4" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
+            <h4 class="text-muted">Brak rekordów do wyświetlenia</h4>
+        </div>
     </div>
 
-    <div id="no-data-info" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
-        <h2>
-            Brak rekordów do wyświetlenia
-        </h2>
-    </div>
+</div>
 
-    {{ active_arrivals|json_script:"active_arrivals_json" }}
-
+{{ active_arrivals|json_script:"active_arrivals_json" }}
 {% endblock %}

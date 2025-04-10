@@ -15,21 +15,47 @@
 
 {% block content %}
 
+<div class="container-fluid mt-4">
     <div id="main-content">
-        <div id="filters">
-            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
-            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
-            <input id="company-filter" type="text" placeholder="Wpisz firmę">
-            <input id="car-filter" type="text" placeholder="Wpisz numer rejestracyjny">
-            <input id="date-start-filter" type="date">
-            <input id="date-end-filter" type="date">
-            <input id="time-start-filter" type="time">
-            <input id="time-end-filter" type="time">
+        <div id="filters" class="row g-2 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <input id="firstname-filter" type="text" class="form-control" placeholder="Wpisz imię">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <input id="lastname-filter" type="text" class="form-control" placeholder="Wpisz nazwisko">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <input id="company-filter" type="text" class="form-control" placeholder="Wpisz firmę">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <input id="car-filter" type="text" class="form-control" placeholder="Wpisz numer rejestracyjny">
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="row g-1">
+                    <div class="col-6">
+                        <input id="date-start-filter" type="date" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <input id="date-end-filter" type="date" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="row g-1">
+                    <div class="col-6">
+                        <input id="time-start-filter" type="time" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <input id="time-end-filter" type="time" class="form-control">
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="history">
-            <table id="history-table">
-                <thead>
+        <div id="history" class="table-responsive">
+            <table id="history-table" class="table table-striped align-middle w-100">
+                <thead class="table-dark">
                     <tr>
                         <th>Imię Nazwisko</th>
                         <th>Firma</th>
@@ -43,12 +69,13 @@
                 <tbody id="history-table-body"></tbody>
             </table>
         </div>
+
+        <div id="no-data-info" class="text-center mt-4" style="display:none;">
+            <h4 class="text-muted">Brak rekordów do wyświetlenia</h4>
+        </div>
     </div>
 
-    <div id="no-data-info" style="display:none;">
-        <h2>Brak rekordów do wyświetlenia</h2>
-    </div>
+</div>
 
-    {{ guests_history|json_script:"guests_history_json" }}
-
+{{ guests_history|json_script:"guests_history_json" }}
 {% endblock %}

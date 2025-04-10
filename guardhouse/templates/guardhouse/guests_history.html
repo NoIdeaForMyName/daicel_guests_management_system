@@ -15,21 +15,46 @@
 
 {% block content %}
 
+<div class="container-fluid mt-4">
     <div id="main-content">
-        <div id="filters">
-            <input id="firstname-filter" type="text" placeholder="Wpisz imię">
-            <input id="lastname-filter" type="text" placeholder="Wpisz nazwisko">
-            <input id="company-filter" type="text" placeholder="Wpisz firmę">
-            <input id="car-filter" type="text" placeholder="Wpisz numer tablicy rejestracyjnej">
-            <input id="arrival-date-start-filter" type="date" placeholder="Podaj datę">
-            <input id="arrival-date-end-filter" type="date" placeholder="Podaj datę">
-            <input id="arrival-time-start-filter" type="time" placeholder="Podaj ">
-            <input id="arrival-time-end-filter" type="time" placeholder="Wpisz numer tablicy rejestracyjnej">
+        <div id="filters" class="row g-2 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <input id="firstname-filter" type="text" class="form-control" placeholder="Wpisz imię">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <input id="lastname-filter" type="text" class="form-control" placeholder="Wpisz nazwisko">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <input id="company-filter" type="text" class="form-control" placeholder="Wpisz firmę">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <input id="car-filter" type="text" class="form-control" placeholder="Wpisz numer tablicy rejestracyjnej">
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="row g-1">
+                    <div class="col-6">
+                        <input id="arrival-date-start-filter" type="date" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <input id="arrival-date-end-filter" type="date" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="row g-1">
+                    <div class="col-6">
+                        <input id="arrival-time-start-filter" type="time" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <input id="arrival-time-end-filter" type="time" class="form-control">
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="arrivals">
-            <table id="arrivals-table">
-                <thead>
+        <div id="arrivals" class="table-responsive">
+            <table id="arrivals-table" class="table table-striped align-middle w-100">
+                <thead class="table-dark">
                     <tr>
                         <th hidden>id</th>
                         <th>Imię Nazwisko</th>
@@ -44,13 +69,13 @@
                 <tbody id="arrivals-table-body"></tbody>
             </table>
         </div>
+
+        <div id="no-data-info" class="text-center mt-4" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
+            <h4 class="text-muted">Brak rekordów do wyświetlenia</h4>
+        </div>
     </div>
 
-    <div id="no-data-info" style="{% if not_confirmed_arrivals|length > 0 %}display:none;{% endif %}">
-        <h2>
-            Brak rekordów do wyświetlenia
-        </h2>
-    </div>
+</div>
 
     {{ archive_arrivals|json_script:"archive_arrivals_json" }}
 
