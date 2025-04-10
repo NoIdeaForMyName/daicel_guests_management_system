@@ -1,4 +1,3 @@
-import { getCookie } from "./../js/script.js";
 
 let process_url;
 
@@ -39,10 +38,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
 
     });
-
-    document.getElementById("add-guest").addEventListener('click', addGuest);
-    document.getElementById("add-host").addEventListener('click', addHost);
-    document.getElementById("submit-button").addEventListener('click', postGuestData);
+    //
+    // document.getElementById("add-guest").addEventListener('click', addGuest);
+    // document.getElementById("add-host").addEventListener('click', addHost);
+    // document.getElementById("submit-button").addEventListener('click', postGuestData);
 });
 
 function getDataFromTable(tableBody) {
@@ -275,4 +274,20 @@ function createCheckboxTableField() {
     actionNode.onclick = function() {this.parentNode.parentNode.remove();};
     actionTableNode.appendChild(actionNode);
     return actionTableNode;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }

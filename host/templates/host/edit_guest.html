@@ -15,63 +15,100 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <div id="main-form">
+                <div class="row mb-4 g-3">
+                    <div class="col-md-6">
+                        <label for="companies-list" class="form-label">Nazwa firmy</label>
+                        <input list="companies" id="companies-list" class="form-control" value="{{ arrival_data.company|default:'' }}">
+                        <datalist id="companies">
+                            {% for company in companies_data %}
+                                <option value="{{company.name}}">
+                            {% endfor %}
+                        </datalist>
+                    </div>
 
-    <div id="main-form">
-        <label for="company-name">Nazwa firmy</label>
-        <input list="companies" id="companies-list" value="{{ arrival_data.company|default:'' }}">
-        <datalist id="companies">
-            {% for company in companies_data %}
-                <option value="{{company.name}}">
-            {% endfor %}
-        </datalist>
+                    <div class="col-md-6">
+                        <label for="register-nb" class="form-label" {% if not confirmed %}style="display:none"{% endif %}>Numer rejestracyjny</label>
+                        <input type="text" id="register-nb" class="form-control"
+                               value="{{ arrival_data.register_number|default:'' }}"
+                               placeholder="Opcjonalnie"
+                               {% if not confirmed %}hidden{% endif %}>
+                    </div>
+                </div>
 
-        <label for="register-nb" {% if not confirmed %}style="display:none"{% endif %}>Numer rejestracyjny</label>
-        <input type="text" id="register-nb" value="{{ arrival_data.register_number|default:'' }}" placeholder="opcjonalnie" {% if not confirmed %}hidden{% endif %}>
-    
-        <label for="arrival-purpose">Cel przybycia</label>
-        <textarea id="arrival-purpose">{{ arrival_data.description }}</textarea>
+                <div class="mb-4">
+                    <label for="arrival-purpose" class="form-label">Cel przybycia</label>
+                    <textarea id="arrival-purpose" class="form-control" rows="3">{{ arrival_data.description }}</textarea>
+                </div>
 
-        <div id="hosts-form">
-            <input list="hosts" id="hosts-list">
-            <datalist id="hosts">
-                {% for host in hosts_data %}
-                    <option value="{{host.firstname}} {{host.lastname}}">
-                {% endfor %}
-            </datalist>
-            <button id="add-host" onclick="addHost()">Dodaj</button>
+                <div class="mb-4 card card-body">
+                    <h5 class="card-title mb-3"><i class="bi bi-person-badge"></i> Gospodarze</h5>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <input list="hosts" id="hosts-list" class="form-control" placeholder="Wyszukaj gospodarza...">
+                            <datalist id="hosts">
+                                {% for host in hosts_data %}
+                                    <option value="{{host.firstname}} {{host.lastname}}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="add-host" class="btn btn-outline-primary w-100" onclick="addHost()">
+                                <i class="bi bi-plus-circle"></i> Dodaj
+                            </button>
+                        </div>
+                    </div>
 
-            <table id="hosts-table">
-                <thead>
-                    <tr>
-                        <th style="display: none">ID</th>
-                        <th>Imię</th>
-                        <th>Nazwisko</th>
-                        <th>Akcja</th>
-                    </tr>
-                </thead>
-                <tbody id="host-table-body">
-                    {% for host in arrival_data.hosts %}
-                        <tr>
-                            <td style="display: none">{{ host.id }}</td>
-                            <td>{{ host.firstname }}</td>
-                            <td>{{ host.lastname }}</td>
-                            <td><button onclick="this.parentNode.parentNode.remove()">-</button></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display: none">ID</th>
+                                    <th>Imię</th>
+                                    <th>Nazwisko</th>
+                                    <th width="100">Akcja</th>
+                                </tr>
+                            </thead>
+                            <tbody id="host-table-body" class="align-middle">
+                                {% for host in arrival_data.hosts %}
+                                <tr>
+                                    <td style="display: none">{{ host.id }}</td>
+                                    <td>{{ host.firstname }}</td>
+                                    <td>{{ host.lastname }}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="this.parentNode.parentNode.remove()">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{% url 'host-not-confirmed-guests' %}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Anuluj
+                    </a>
+                    <button type="submit" class="btn btn-primary" onclick="postGuestData()">
+                        <i class="bi bi-check2-circle"></i> Zapisz zmiany
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <input type="submit" value="Zapisz zmiany" onclick="postGuestData()">
-        <a href={% url 'host-not-confirmed-guests' %}><button class="main-button">Anuluj</button></a>
     </div>
+</div>
 
-    {{ process_url|json_script:"process_url_json" }}
-    {{ author|json_script:"author_json" }}
-    {{ confirmed|json_script:"confirmed_json" }}
-    {{ hosts_data|json_script:"hosts_data_json" }}
-    {{ companies_data|json_script:"companies_data_json" }}
-    {{ registered_guests_data|json_script:"registered_guests_data_json" }}
-    {{ arrival_data|json_script:"arrival_data_json" }}
+{{ process_url|json_script:"process_url_json" }}
+{{ author|json_script:"author_json" }}
+{{ confirmed|json_script:"confirmed_json" }}
+{{ hosts_data|json_script:"hosts_data_json" }}
+{{ companies_data|json_script:"companies_data_json" }}
+{{ registered_guests_data|json_script:"registered_guests_data_json" }}
+{{ arrival_data|json_script:"arrival_data_json" }}
 
 {% endblock %}
