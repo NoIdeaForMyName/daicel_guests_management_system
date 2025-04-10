@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'daicel_guests_management_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'daicel_guest_management_system_db',
+        'NAME': 'DGMS',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
