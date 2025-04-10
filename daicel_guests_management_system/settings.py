@@ -145,7 +145,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     BASE_DIR / "guardhouse" / "static",
     BASE_DIR / "host" / "static",
-    BASE_DIR / "main_menu" / "static",
     BASE_DIR / "add_guest" / "static"
     ]
 
