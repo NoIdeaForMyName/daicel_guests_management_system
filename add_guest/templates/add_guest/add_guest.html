@@ -19,7 +19,7 @@
     <div class="card shadow">
         <div class="card-body">
             <div id="main-form">
-                <!-- Sekcja firma i numer rejestracyjny -->
+
                 <div class="row mb-4 g-3">
                     <div class="col-md-6">
                         <label for="companies-list" class="form-label">Nazwa firmy</label>
@@ -37,14 +37,12 @@
                     </div>
                 </div>
 
-                <!-- Cel przybycia -->
                 <div class="mb-4">
                     <label for="arrival-purpose" class="form-label">Cel przybycia</label>
                     <textarea id="arrival-purpose" class="form-control"
                               placeholder="np. Spotkanie, Prace serwisowe itp." rows="3"></textarea>
                 </div>
 
-                <!-- Sekcja goście -->
                 <div class="mb-4 card card-body">
                     <h5 class="card-title mb-3"><i class="bi bi-people"></i> Goście</h5>
                     <div class="row g-3">
@@ -76,7 +74,6 @@
                     </div>
                 </div>
 
-                <!-- Sekcja gospodarze -->
                 <div class="mb-4 card card-body">
                     <h5 class="card-title mb-3"><i class="bi bi-person-badge"></i> Gospodarze</h5>
                     <div class="row g-3">
@@ -125,11 +122,10 @@
                     </div>
                 </div>
 
-                <!-- Przyciski akcji -->
                 <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a href="{% url 'host-home' %}" class="btn btn-secondary">
+                    <button onclick="window.history.back();" class="btn btn-secondary">
                         <i class="bi bi-x-circle"></i> Anuluj
-                    </a>
+                    </button>
                     <button id="submit-button" type="submit" class="btn btn-primary">
                         <i class="bi bi-check2-circle"></i> Zapisz
                     </button>
