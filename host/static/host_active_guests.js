@@ -44,7 +44,7 @@ function displayGuests(guests) {
         row.appendChild(createTextTableField(guest.name, false, "fw-bold"));
         row.appendChild(createTextTableField(guest.company));
         row.appendChild(createTextTableField(guest.register_number));
-        row.appendChild(createTextTableField(guest.arrival_timestamp.toLocaleString()));
+        row.appendChild(createTextTableField(guest.arrival_timestamp.toLocaleString().slice(0, -3)));
         row.appendChild(createTextTableField(guest.description, false, "fw-light fst-italic"));
 
         row.appendChild(createHostsTableField(guest.hosts));
