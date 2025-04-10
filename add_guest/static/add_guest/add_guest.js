@@ -1,4 +1,4 @@
-import { getCookie } from "./../script.js";
+import { getCookie } from "./../js/script.js";
 
 let process_url;
 

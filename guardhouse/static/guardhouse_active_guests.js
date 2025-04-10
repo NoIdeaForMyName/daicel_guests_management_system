@@ -1,4 +1,4 @@
-import { createTextTableField, filterRows, createCheckboxTableField } from './guests_service.js';
+import { createTextTableField, filterRows, createCheckboxTableField } from './js/guests_service.js';
 
 let activeArrivals;
 

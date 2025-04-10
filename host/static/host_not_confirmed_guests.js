@@ -1,5 +1,5 @@
-import { createTextTableField, filterRows } from './guests_service.js';
-import { getCookie } from './script.js'
+import { createTextTableField, filterRows } from './js/guests_service.js';
+import { getCookie } from './js/script.js'
 
 let notConfirmedGuests;
 let firstnameFilter;

@@ -143,7 +143,6 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "daicel_guests_management_system" / "static",
     BASE_DIR / "guardhouse" / "static",
     BASE_DIR / "host" / "static",
     BASE_DIR / "main_menu" / "static",

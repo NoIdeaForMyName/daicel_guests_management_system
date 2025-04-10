@@ -1,4 +1,4 @@
-import { createTextTableField, filterRows } from './guests_service.js';
+import { createTextTableField, filterRows } from './js/guests_service.js';
 
 let activeGuests;
 let firstnameFilter;
