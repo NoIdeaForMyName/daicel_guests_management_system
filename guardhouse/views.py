@@ -22,7 +22,6 @@ def home(request):
     active_guests_service = ActiveGuestsService()
     today_date = datetime.datetime.combine(datetime.datetime.today().date(), datetime.datetime.min.time())
     today_date = timezone.make_aware(today_date)
-    print('aware:', today_date)
     old_active_guests = (Arrival.objects
                          .filter(confirmed=True)
                          .filter(leave_timestamp=None)

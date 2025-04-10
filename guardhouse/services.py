@@ -22,7 +22,7 @@ class ActiveGuestsService:
                                 .prefetch_related('responsibility_set')
                                 .all()
                                 )
-        print("LOLZ:", self.active_arrivals.values())
+        print("active arrivals:", self.active_arrivals.values())
 
     def all_cars_at_workplace(self) -> int:
         return self.active_arrivals.filter(~Q(car=None)).values('car').distinct().count()
