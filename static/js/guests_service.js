@@ -9,6 +9,22 @@ export function createTextTableField(text, hidden=false) {
     return tableNode;
 }
 
+export function createHostsTableField(hosts) {
+    const hostsCell = document.createElement("td");
+    const badgeContainer = document.createElement("div");
+    badgeContainer.className = "d-flex flex-wrap gap-2 align-items-center";
+
+    hosts.forEach(host => {
+        const badge = document.createElement("span");
+        badge.className = "badge bg-primary py-2";
+        badge.textContent = host.name;
+        badgeContainer.appendChild(badge);
+    });
+    hostsCell.appendChild(badgeContainer);
+
+    return hostsCell;
+}
+
 export function createCheckboxTableField(id) {
     const actionTableNode = document.createElement("td");
     actionTableNode.className = "text-center align-middle";

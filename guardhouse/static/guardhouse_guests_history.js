@@ -1,4 +1,4 @@
-import { createTextTableField, filterRows } from './js/guests_service.js';
+import { createTextTableField, filterRows, createHostsTableField } from './js/guests_service.js';
 
 let historyArrivals;
 
@@ -67,11 +67,7 @@ function displayArrivals(arrivals) {
         row.appendChild(createTextTableField(arrival.leave_timestamp.toLocaleString().slice(0, -3)));
         row.appendChild(createTextTableField(arrival.description));
 
-        let hostsTableNode = document.createElement("td");
-        for (let host of arrival.hosts) {
-            hostsTableNode.innerHTML += `<p>${host.name}</p>`;
-        }
-        row.appendChild(hostsTableNode);
+        row.appendChild(createHostsTableField(arrival.hosts));
 
         arrivalsTableBody.appendChild(row);
     }

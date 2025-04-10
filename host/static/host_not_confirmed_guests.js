@@ -1,4 +1,4 @@
-import { createTextTableField, filterRows } from './js/guests_service.js';
+import { createTextTableField, filterRows, createHostsTableField } from './js/guests_service.js';
 import { getCookie } from './js/script.js'
 
 let notConfirmedGuests;
@@ -40,15 +40,7 @@ function displayGuests(guests) {
         row.appendChild(createTextTableField(guest.company));
         row.appendChild(createTextTableField(guest.description));
 
-        const hostsCell = document.createElement("td");
-        hostsCell.className = "d-flex flex-wrap gap-2";
-        guest.hosts.forEach(host => {
-            const badge = document.createElement("span");
-            badge.className = "badge bg-primary";
-            badge.textContent = host.name;
-            hostsCell.appendChild(badge);
-        });
-        row.appendChild(hostsCell);
+        row.appendChild(createHostsTableField(guest.hosts));
 
         const actionCell = document.createElement("td");
         actionCell.className = "text-nowrap";

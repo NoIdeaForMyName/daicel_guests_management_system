@@ -1,4 +1,4 @@
-import {createCheckboxTableField, createTextTableField, filterRows} from './js/guests_service.js';
+import {createCheckboxTableField, createTextTableField, filterRows, createHostsTableField} from './js/guests_service.js';
 
 let notConfirmedArrivals;
 
@@ -53,11 +53,7 @@ function displayArrivals(arrivals) {
         row.appendChild(createTextTableField(arrival.company));
         row.appendChild(createTextTableField(arrival.description));
 
-        let hostsTableNode = document.createElement("td");
-        for (let host of arrival.hosts) {
-            hostsTableNode.innerHTML += `<p>${host.name}</p>`;
-        }
-        row.appendChild(hostsTableNode);
+        row.appendChild(createHostsTableField(arrival.hosts));
 
         row.appendChild(createCheckboxTableField(arrival.id));
 

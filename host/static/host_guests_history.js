@@ -1,4 +1,4 @@
-import { createTextTableField, filterRows } from './js/guests_service.js';
+import { createTextTableField, filterRows, createHostsTableField } from './js/guests_service.js';
 
 let guestsHistory;
 let firstnameFilter;
@@ -61,10 +61,10 @@ function displayHistory(history) {
         row.appendChild(createTextTableField(entry.description));
 
         const hostsCell = document.createElement("td");
-        entry.hosts.forEach(host => {
-            hostsCell.innerHTML += `<p>${host.name}</p>`;
-        });
-        row.appendChild(hostsCell);
+        const badgeContainer = document.createElement("div");
+        badgeContainer.className = "d-flex flex-wrap gap-2 align-items-center";
+
+        row.appendChild(createHostsTableField(entry.hosts));
 
         historyTableBody.appendChild(row);
     });
