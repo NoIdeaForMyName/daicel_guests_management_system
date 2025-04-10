@@ -18,15 +18,7 @@ let noDataInfo;
 document.addEventListener("DOMContentLoaded", (event) => {
     notConfirmedArrivals = JSON.parse(document.getElementById('not_confirmed_arrivals_json').textContent);
 
-    endFormPopup = document.getElementById("end-form-popup");
-    showPopupButton = document.getElementById("show-end-popup-button");
-    closePopupButton = document.getElementById("close-end-popup-button");
-    showPopupButton.addEventListener('click', () => {
-        endFormPopup.style.display = "block";
-    });
-    closePopupButton.addEventListener('click', () => {
-        endFormPopup.style.display = "none";
-    });
+    const modal = new bootstrap.Modal(document.getElementById('endFormModal'));
 
     arrivalsTableBody = document.getElementById("arrivals-table-body");
 
@@ -93,22 +85,17 @@ function filterAndDisplayRows() {
 function confirmVisitsConfirmationPopup() {
     let counter = 0;
     document.getElementsByName("check[]").forEach(el => {
-        if (el.checked) {
-            counter++;
-        }
+        if (el.checked) counter++;
     });
 
     if (counter === 0) {
+        // Zamknij modal jeśli jest otwarty
+        const modal = bootstrap.Modal.getInstance(document.getElementById('endFormModal'));
+        if (modal) modal.hide();
+
         alert("Nie wybrano żadnej wizyty!");
-        endFormPopup.style.display = 'none';
         return false;
     }
 
-    if (confirm(`Czy na pewno chcesz potwierdzić wybrane wizyty? Liczba wybranych wizyt: ${counter}`)) {
-        return true;
-    }
-    else {
-        endFormPopup.style.display = 'none';
-        return false;
-    }
+    return confirm(`Czy na pewno chcesz potwierdzić ${counter} wybranych wizyt?`);
 }

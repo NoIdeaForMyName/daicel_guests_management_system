@@ -32,19 +32,33 @@
         <form method="post" onsubmit="return confirmVisitsConfirmationPopup();">
             {% csrf_token %}
 
-            <!-- Popup form -->
-            <div id="end-form-popup" class="popup p-4 border rounded bg-light mb-3" style="display:none; max-width: 400px;">
-                <div class="mb-3">
-                    <label for="register_nb" class="form-label">Numer rejestracyjny (opcjonalnie)</label>
-                    <input type="text" name="register_nb" class="form-control">
-                </div>
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-success">Akceptuj</button>
-                    <button id="close-end-popup-button" type="button" class="btn btn-outline-danger">Anuluj</button>
+            <div class="modal fade" id="endFormModal" tabindex="-1" aria-labelledby="endFormModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="endFormModalLabel">Potwierdź wizyty</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="register_nb" class="form-label">Numer rejestracyjny (opcjonalnie)</label>
+                                <input type="text" name="register_nb" class="form-control">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <button id="show-end-popup-button" type="button" class="btn btn-secondary w-100 mb-3">Potwierdź wizyty</button>
+            <button type="button"
+                    class="btn btn-secondary w-100 mb-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#endFormModal">
+                Potwierdź wizyty
+            </button>
 
             <div id="arrivals" class="table-responsive">
                 <table id="arrivals-table" class="table table-striped align-middle w-100">
