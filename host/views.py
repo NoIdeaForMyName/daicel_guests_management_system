@@ -12,7 +12,7 @@ import json
 from .services import *
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm
 
 def login_host(request):
@@ -37,6 +37,11 @@ def login_host(request):
             "wrong_credentials": False,
             "form": LoginForm(initial={'next': request.GET['next']})
         }, request))
+
+@login_required(login_url="/host/login/")
+def logout_host(request):
+    logout(request)
+    return redirect('main-menu-home')
 
 @login_required(login_url="/host/login/")
 def home(request):

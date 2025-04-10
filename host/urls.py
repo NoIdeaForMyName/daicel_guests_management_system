@@ -3,12 +3,13 @@ from host import views
 from add_guest.views import add_guest, add_guest_process
 from django.contrib.auth.decorators import login_required
 
-
 from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
+    #path('login/', auth_views.LoginView.as_view(template_name='host/login.html'), name='host-login'),
     path('', views.home, name='host-home'),
+    path('logout', views.logout_host, name='host-logout'),
     path('add-guest', login_required(add_guest, login_url="/host/login/"), {"src": "host"}, name='host-add-guest'),
     path('add-guest-process', login_required(add_guest_process, login_url="/host/login/"), name='host-add-guest-process'),
     path('my-guests', views.my_guests, name='host-my-guests'),
