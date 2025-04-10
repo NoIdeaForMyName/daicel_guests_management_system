@@ -144,7 +144,7 @@ function sendFormToServer(json) {
 // }
 
 function validateCompany(name) {
-    return (companies_data_json.map(comp_data => comp_data.name)).includes(name);
+    return (companies_data_json.map(comp_data => comp_data.name)).includes(name) || name === '';
 }
 
 function validateRegisterNb(registerNb) {
