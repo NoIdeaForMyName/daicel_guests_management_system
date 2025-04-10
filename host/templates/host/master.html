@@ -5,9 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'style.css' %}"/>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.min.css' %}">
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     {% block links %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
@@ -17,5 +16,7 @@
     <h1 class="my-3 text-center">{% block header %}{% endblock %}</h1>
     {% block content %}{% endblock %}
     <footer>{% include 'main_menu/footer.html' %}</footer>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>
