@@ -58,6 +58,11 @@ class Car(models.Model):
     def validate_register_number(cls, register_nb):
         return len(register_nb) <= MAX_REGISTER_NB_LEN
 
+    def save(self, *args, **kwargs):
+        if self.register_number:
+            self.register_number = self.register_number.upper()
+        super().save(*args, **kwargs)
+
 
 class Arrival(models.Model):
     confirmed = models.BooleanField()
