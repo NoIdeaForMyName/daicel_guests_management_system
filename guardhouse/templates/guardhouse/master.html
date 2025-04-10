@@ -4,6 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'style.css' %}"/>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
@@ -15,6 +16,6 @@
     <nav>{% include 'guardhouse/header.html' %}</nav>
     <h1>{% block header %}{% endblock %}</h1>
     {% block content %}{% endblock %}
-    <footer>{% include 'guardhouse/footer.html' %}</footer>
+    <footer>{% include 'main_menu/footer.html' %}</footer>
 </body>
 </html>

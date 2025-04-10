@@ -1,4 +1,29 @@
-<a href={% url 'guardhouse-home' %}>STRONA GŁÓWNA</a> |
-<a href={% url 'guardhouse-not-confirmed-visits' %}>NIEPOTWIERDZONE WIZYTY</a> |
-<a href={% url 'guardhouse-active-guests' %}>AKTYWNI GOŚCIE</a> |
-<a href={% url 'guardhouse-guests-history' %}>HISTORIA GOŚCI</a>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'guardhouse-home' %}">
+            <i class="bi bi-shield-lock"></i> Stróżówka
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#guardhouseNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="guardhouseNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'guardhouse-not-confirmed-visits' %}">
+                        <i class="bi bi-question-circle"></i> Niepotwierdzone
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'guardhouse-active-guests' %}">
+                        <i class="bi bi-people"></i> Aktywni
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'guardhouse-guests-history' %}">
+                        <i class="bi bi-clock-history"></i> Historia
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
