@@ -19,6 +19,7 @@ from django.utils import timezone
 @validate_ip
 def home(request):
     template = loader.get_template('guardhouse/home.html')
+    active_guests_service = ActiveGuestsService()
     today_date = datetime.datetime.combine(datetime.datetime.today().date(), datetime.datetime.min.time())
     today_date = timezone.make_aware(today_date)
     print('aware:', today_date)
@@ -28,9 +29,10 @@ def home(request):
                          .filter(arrival_timestamp__lt=today_date)
                          .all())
     return HttpResponse(template.render({
-        'old_guest_nb': len(old_active_guests)
+        'old_guest_nb': len(old_active_guests),
+        'guest_nb': active_guests_service.active_guests_count(),
+        'cars_nb': active_guests_service.all_cars_at_workplace(),
     }))
-
 
 @validate_ip
 def active_guests(request):
@@ -48,8 +50,8 @@ def active_guests(request):
 
     template = loader.get_template('guardhouse/active_guests.html')
 
-    active_guests_nb = active_guests_service.active_guests_count()
-    guests_car_nb_at_workplace = active_guests_service.all_cars_at_workplace()
+    # active_guests_nb = active_guests_service.active_guests_count()
+    # guests_car_nb_at_workplace = active_guests_service.all_cars_at_workplace()
 
     active_arrivals, success = active_guests_service.active_arrivals_context()
     if not success:
@@ -57,8 +59,8 @@ def active_guests(request):
     active_arrivals = active_arrivals['message']
 
     return HttpResponse(template.render({
-            'guest_nb': active_guests_nb,
-            'cars_nb': guests_car_nb_at_workplace,
+            # 'guest_nb': active_guests_nb,
+            # 'cars_nb': guests_car_nb_at_workplace,
             'active_arrivals': active_arrivals
         }, request))
 

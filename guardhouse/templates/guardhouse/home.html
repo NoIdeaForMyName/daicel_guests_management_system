@@ -14,12 +14,13 @@
         <div class="col-12 col-md-10 col-lg-8">
             <div class="card shadow-lg">
                 <div class="card-header bg-secondary text-white text-center">
-                    <h2 class="mb-0"><i class="bi bi-speedometer2"></i>{% if old_guest_nb == 0 %} Brak powiadomień{% else %} UWAGA - przedawnione wizyty{% endif %}</h2>
+                    <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Statystyki</h2>
                 </div>
 
-                <div class="card-body" style="{% if old_guest_nb == 0 %}display:none;{% endif %}">
+                <div class="card-body">
                     <div class="row g-4">
-                        <div class="col-12">
+
+                        <div class="col-12 col-md-4">
                             <div class="card text-white bg-danger h-100 shadow">
                                 <div class="card-body text-center py-5">
                                     <h3 class="card-title mb-3">Przedawnione</h3>
@@ -27,6 +28,25 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="card text-white bg-success h-100 shadow">
+                                <div class="card-body text-center py-5">
+                                    <h3 class="card-title mb-3">Aktywne</h3>
+                                    <div class="display-2 fw-bold">{{ guest_nb }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="card text-white bg-success h-100 shadow">
+                                <div class="card-body text-center py-5">
+                                    <h3 class="card-title mb-3">Pojazdy</h3>
+                                    <div class="display-2 fw-bold">{{ cars_nb }}</div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
