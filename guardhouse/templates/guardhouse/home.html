@@ -9,13 +9,37 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-secondary text-white text-center">
+                    <h2 class="mb-0"><i class="bi bi-speedometer2"></i> UWAGA - przedawnione wizyty</h2>
+                </div>
 
-    <div class="info" style="{% if old_guest_nb == 0 %}display:none;{% endif %}">
-        <h2>UWAGA - przedawnione aktywne wizyty</h2>
-        <p>W systemie widoczne są aktywne wizyty z poprzednich dni, które powinny zostać zakończone</p>
-        <p>Liczba przedawnionych wizyt: {{ old_guest_nb }}</p>
+                <div class="card-body" style="{% if old_guest_nb == 0 %}display:none;{% endif %}">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="card text-white bg-danger h-100 shadow">
+                                <div class="card-body text-center py-5">
+                                    <h3 class="card-title mb-3">Przedawnione</h3>
+                                    <div class="display-2 fw-bold">{{ old_guest_nb }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'main-menu-home' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-house-door"></i> Powrót do głównego menu
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-
-    <a href={% url 'main-menu-home' %}>Powrów do głównego menu</a>
-
+</div>
 {% endblock %}

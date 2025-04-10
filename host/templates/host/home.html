@@ -9,12 +9,46 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-secondary text-white text-center">
+                    <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Statystyki spotkań</h2>
+                </div>
 
-    <div class="info">
-        <h2>Liczba niepotwierdzonych spotkań: {{ not_confirmed_arrivals_nb }}</h2>
-        <h2>Liczba aktywnych spotkań: {{ active_arrivals_nb }}</h2>
+                <div class="card-body">
+                    <div class="row g-4">
+
+                        <div class="col-12 col-md-6">
+                            <div class="card text-white bg-warning h-100 shadow">
+                                <div class="card-body text-center py-5">
+                                    <h3 class="card-title mb-3">Niepotwierdzone</h3>
+                                    <div class="display-2 fw-bold">{{ not_confirmed_arrivals_nb }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="card text-white bg-success h-100 shadow">
+                                <div class="card-body text-center py-5">
+                                    <h3 class="card-title mb-3">Aktywne</h3>
+                                    <div class="display-2 fw-bold">{{ active_arrivals_nb }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'main-menu-home' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-house-door"></i> Powrót do głównego menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <a href={% url 'main-menu-home' %}>Powrów do głównego menu</a>
-
+</div>
 {% endblock %}
