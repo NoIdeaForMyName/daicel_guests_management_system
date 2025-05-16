@@ -32,11 +32,10 @@ def login_host(request):
                     "wrong_credentials": True,
                     "form": LoginForm(initial={'next': next_})
                 }, request))
-    else:
-        return HttpResponse(template.render({
-            "wrong_credentials": False,
-            "form": LoginForm(initial={'next': request.GET['next']})
-        }, request))
+    return HttpResponse(template.render({
+        "wrong_credentials": False,
+        "form": LoginForm(initial={'next': request.GET['next']})
+    }, request))
 
 @login_required(login_url="/host/login/")
 def logout_host(request):
