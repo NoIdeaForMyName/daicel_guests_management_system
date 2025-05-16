@@ -47,7 +47,12 @@ def home(request):
     template = loader.get_template('host/home.html')
     not_confirmed_guests_nb = len(HostNotConfirmedGuestsService(request.user.id).not_confirmed_guests)
     active_guests_nb = len(HostActiveGuestsService(request.user.id).active_arrivals)
+    hosts, success = hosts_API.get_all_hosts_data_dict()
+    if not success:
+        return hosts # TODO
+    host = next(filter(lambda h: h['id'] == request.user.id, hosts['message']))
     return HttpResponse(template.render({
+        'name': f'{host['firstname']} {host['lastname']}',
         'not_confirmed_arrivals_nb': not_confirmed_guests_nb,
         'active_arrivals_nb': active_guests_nb
     }))
